@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickJobs | Home</title>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="logo">
+<a href="{% url 'home' %}">Quick<span>Jobs</span></a>
+</div>
+
+<form class="search-box" method="GET" id="searchForm">
+
+<input
+type="text"
+class="search"
+name="q"
+placeholder="Search jobs..."
+value="{{ request.GET.q }}"
+>
+
+<input
+type="text"
+class="search"
+name="place"
+placeholder="Enter place"
+value="{{ request.GET.place }}"
+>
+
+<select name="category" class="search">
+<option value="">All Categories</option>
+
+{% for cat in categories %}
+<option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+{{ cat.name }}
+</option>
+{% endfor %}
+
+</select>
+
+</form>
+
+
+<div class="profile">
+<button class="profile-btn" type="button" onclick="toggleProfile()">
+
+{% if user.is_authenticated %}
+{{ user.username }} ⌄
+{% else %}
+Login ⌄
+{% endif %}
+
+</button>
+
+<div class="dropdown" id="profileMenu">
+
+{% if user.is_authenticated %}
+<a href="{% url 'profile' %}">My Profile</a>
+<a href="{% url 'add_job' %}">Add Job</a>
+<a href="{% url 'saved_jobs' %}">Saved Jobs</a>
+<a href="{% url 'logout_user' %}">Logout</a>
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+{% endif %}
+
+</div>
+</div>
+</header>
+
+<section class="welcome">
+{% if user.is_authenticated %}
+<h2>Welcome, {{ user.username }}</h2>
+{% else %}
+<h2>Welcome to QuickJobs</h2>
+{% endif %}
+
+<p>Find part-time and full-time jobs near you</p>
+</section>
+
+<section class="job-list">
+
+{% for job in jobs %}
+
+<div class="job-card">
+
+
+
+<a href="{% url 'save_job' job.id %}" class="save-icon">
+    {% if job.id in saved_job_ids %}
+        ❤️
+    {% else %}
+        🤍
+    {% endif %}
+</a>
+
+<div class="job-main">
+
+<h3>{{ job.shop_name }}</h3>
+
+<p><b>Job:</b> {{ job.title }}</p>
+
+<p class="exp">Experience: {{ job.experience|default:"Fresher" }}</p>
+
+<p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
+
+<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
+
+<!--<p><b>Category:</b> {{ job.category }}</p>-->
+
+<p><b>Location:</b> {{ job.location }}</p>
+
+<!--<p><b>Salary:</b> {{ job.salary }}</p>-->
+
+</div>
+
+<div class="contact-box">
+<a href="{% url 'job_details' job.id %}">
+<button class="details-btn">More Details</button>
+</a>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<p class="no-job">No jobs available</p>
+
+{% endfor %}
+
+</section>
+
+<script>
+function toggleProfile(){
+document.getElementById("profileMenu").classList.toggle("show");
+}
+
+const form = document.getElementById("searchForm");
+const inputs = form.querySelectorAll("input, select");
+
+let timer;
+
+inputs.forEach(input => {
+    input.addEventListener("input", () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            form.submit();
+        }, 400);
+    });
+
+    input.addEventListener("change", () => {
+        form.submit();
+    });
+});
+
+
+
+
+</script>
+
+</body>
+</html>

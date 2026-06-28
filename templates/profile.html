@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile | QuickJobs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+
+<body>
+
+<div class="profile-box">
+
+<h2>My Profile</h2>
+
+<label>Name</label>
+<input type="text" value="{{ request.user.username }}" disabled>
+
+<label>Email</label>
+<input type="email" value="{{ request.user.email }}" disabled>
+
+
+
+<a href="{% url 'logout_user' %}">
+<button class="logout-btn">Logout</button>
+</a>
+
+<hr>
+
+<h2>My Added Jobs</h2>
+
+{% for job in jobs %}
+
+<div class="job">
+
+<div class="top">
+{% if job.logo %}
+<img src="{{ job.logo.url }}" class="logo">
+{% endif %}
+<b>{{ job.title }}</b>
+</div>
+
+<p><b>Shop:</b> {{ job.shop_name }}</p>
+<p><b>Category:</b> {{ job.category }}</p>
+<p><b>Experience:</b> {{ job.experience }}</p>
+<p><b>Work Time:</b> {{ job.work_time }}</p>
+<p><b>Age:</b> {{ job.age_limit|default:"Not specified" }}</p>
+<p><b>Location:</b> {{ job.location }}</p>
+<p><b>Salary:</b> ₹{{ job.salary }}</p>
+<p><b>Phone:</b> {{ job.phone }}</p>
+
+<div class="job-actions">
+<a href="{% url 'edit_job' job.id %}">
+<button>Edit</button>
+</a>
+
+<a href="{% url 'delete_job' job.id %}" onclick="return confirm('Delete this job?')">
+<button class="delete-btn">Delete</button>
+</a>
+</div>
+
+</div>
+
+{% empty %}
+
+<p style="text-align:center">No jobs added yet</p>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

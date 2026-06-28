@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ job.title }} | QuickJobs</title>
+<link rel="stylesheet" href="{% static 'css/job_details.css' %}">
+</head>
+
+<body>
+
+<section class="details-page">
+
+<div class="details-header">
+<a href="{% url 'home' %}" class="back-btn">← Back</a>
+</div>
+
+<div class="job-card details-card">
+
+<div class="job-main">
+<h3>{{ job.shop_name }}</h3>
+
+<p><b>Job:</b> {{ job.title }}</p>
+<p><b>Experience:</b> {{ job.experience|default:"Fresher" }}</p>
+<p><b>Work Time:</b> {{ job.work_time }}</p>
+<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
+<p><b>Location:</b> {{ job.location }}</p>
+<p><b>Salary:</b> {{ job.salary }}</p>
+
+<hr>
+
+<p><b>Description:</b></p>
+<div class="description">
+{{ job.description|linebreaks }}
+</div>
+</div>
+
+<div class="contact-box">
+<span class="contact-label">Apply / Contact</span>
+
+<a href="https://wa.me/91{{ job.phone }}?text=Hi, I saw your {{ job.title }} job vacancy on QuickJobs. I am interested." target="_blank">
+<button class="contact-btn">Apply on WhatsApp</button>
+</a>
+
+<small class="note">Send your resume / details through WhatsApp</small>
+</div>
+
+</div>
+
+</section>
+
+</body>
+</html>

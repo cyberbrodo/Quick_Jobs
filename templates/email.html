@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QuickJobs Login</title>
+<link href="{% static 'css/email.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-card">
+<h1>Quick<span>Jobs.</span></h1>
+<p class="tagline">Empowering your career</p>
+
+<form method="post">
+{% csrf_token %}
+<input type="email" placeholder="Enter Your Email" name="email" required>
+<button type="submit">Login →</button>
+</form>
+</div>
+
+</body>
+</html>

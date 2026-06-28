@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Job | QuickJobs</title>
+<link rel="stylesheet" href="{% static 'css/addjob.css' %}">
+</head>
+
+<body>
+
+<div class="job-form">
+
+<h2>Add Job Vacancy</h2>
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<input type="text" name="shop_name" placeholder="Company / Shop Name" required>
+
+<input type="text" name="title" placeholder="Job Title" required>
+
+<label>Category</label>
+
+<input
+    type="text"
+    name="category"
+    placeholder="Category (Example: Bakery, Mobile Shop, Jewellery)"
+    value="{% if job %}{{ job.category.name }}{% endif %}"
+    required
+>
+</select>
+
+<select name="experience">
+<option value="">Experience</option>
+<option>Fresher</option>
+    <option>No experience</option>
+<option>0-1 Year</option>
+<option>1-2 Years</option>
+</select>
+
+<select name="work_time" required>
+<option value="">Work Time</option>
+<option>Full Time</option>
+<option>Part Time</option>
+<option>Shift Based</option>
+</select>
+
+
+
+<input type="text" name="age_limit" placeholder="Age Limit">
+
+<input type="text" name="location" placeholder="Location" required>
+
+<input type="text" name="salary" placeholder="Salary" required>
+
+<input type="text" name="owner_name" placeholder="Owner Name">
+
+<input type="email" name="owner_email" value="{{ request.user.email }}" placeholder="Email">
+
+<input type="tel" name="phone" placeholder="Phone number" required>
+
+<textarea name="description" placeholder="Job Description"></textarea>
+
+<button type="submit" id="addBtn">Add Job</button>
+
+</form>
+
+<a href="{% url 'home' %}">← Back to Home</a>
+
+</div>
+
+</body>
+</html>

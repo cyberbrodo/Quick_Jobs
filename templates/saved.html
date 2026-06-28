@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Saved Jobs | QuickJobs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+font-family: Arial, sans-serif;
+background:#f5f5f5;
+padding:20px;
+}
+.job-card{
+background:#fff;
+padding:15px;
+border-radius:8px;
+margin-bottom:15px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.remove-btn{
+background:#ff4d4d;
+color:#fff;
+border:none;
+padding:8px 14px;
+border-radius:5px;
+cursor:pointer;
+text-decoration:none;
+display:inline-block;
+}
+.apply-btn{
+background:#1dd1a1;
+color:#fff;
+padding:8px 14px;
+border-radius:5px;
+text-decoration:none;
+display:inline-block;
+margin-right:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Saved Jobs</h2>
+
+{% for item in saved %}
+
+<div class="job-card">
+
+<h3>{{ item.job.title }}</h3>
+<p><strong>Shop:</strong> {{ item.job.shop_name }}</p>
+<p><strong>Category:</strong> {{ item.job.category }}</p>
+<p><strong>Age:</strong> {{ item.job.age_limit|default:"Not specified" }}</p>
+<p><strong>Location:</strong> {{ item.job.location }}</p>
+<p><strong>Salary:</strong> ₹{{ item.job.salary }}</p>
+
+<a class="apply-btn" href="https://wa.me/91{{ item.job.phone }}" target="_blank">
+WhatsApp
+</a>
+
+<a class="remove-btn" href="{% url 'remove_saved_job' item.id %}">
+Remove
+</a>
+
+</div>
+
+{% empty %}
+
+<p>No saved jobs yet</p>
+
+{% endfor %}
+
+<a href="{% url 'home' %}">← Back to Home</a>
+
+</body>
+</html>
