@@ -12,31 +12,22 @@ from django.db.models import Q
 from .models import Job, SavedJob, Category
 
 
+
 def send_otp(request):
     if request.method == "POST":
-        email = request.POST.get("email")
-
-        if not email:
-            messages.error(request, "Enter email")
-            return redirect("login")
-
+        email = request.POST.get('email')
         otp = str(random.randint(100000, 999999))
 
-        request.session["otp"] = otp
-        request.session["email"] = email
+        request.session['otp'] = otp
+        request.session['email'] = email
 
-        print("QUICKJOBS OTP:", otp)
-
-        try:
-            send_mail(
-                "Your QuickJobs OTP Code",
-                f"Your OTP is {otp}",
-                settings.EMAIL_HOST_USER,
-                [email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            print("EMAIL ERROR:", e)
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP is {otp}",
+            "quickjobs073@gmail.com",
+            [email],
+            fail_silently=False,
+        )
 
         return redirect("otp")
 
@@ -46,16 +37,16 @@ def send_otp(request):
 def verify_otp(request):
     if request.method == "POST":
         otp = (
-            request.POST.get("otp1", "") +
-            request.POST.get("otp2", "") +
-            request.POST.get("otp3", "") +
-            request.POST.get("otp4", "") +
-            request.POST.get("otp5", "") +
-            request.POST.get("otp6", "")
+            request.POST.get('otp1', '') +
+            request.POST.get('otp2', '') +
+            request.POST.get('otp3', '') +
+            request.POST.get('otp4', '') +
+            request.POST.get('otp5', '') +
+            request.POST.get('otp6', '')
         )
 
-        saved_otp = request.session.get("otp")
-        email = request.session.get("email")
+        saved_otp = request.session.get('otp')
+        email = request.session.get('email')
 
         if otp == saved_otp and email:
             username = email.split("@")[0]
@@ -67,15 +58,17 @@ def verify_otp(request):
 
             login(request, user)
 
-            request.session.pop("otp", None)
-            request.session.pop("email", None)
+            request.session.pop('otp', None)
+            request.session.pop('email', None)
 
+            messages.success(request, "Login successful!")
             return redirect("home")
 
-        messages.error(request, "Invalid OTP. Try again.")
+        messages.error(request, "Invalid OTP. try again.")
         return redirect("otp")
 
     return render(request, "otp.html")
+
 
 
 def home(request):

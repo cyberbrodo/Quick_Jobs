@@ -137,8 +137,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER ='quickjobs073@gmail.com'
 EMAIL_HOST_PASSWORD ='htfn ofwd vpkw xelf'
-EMAIL_TIMEOUT = 10
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 # admin pass
