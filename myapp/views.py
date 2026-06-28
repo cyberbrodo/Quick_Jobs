@@ -25,13 +25,19 @@ def send_otp(request):
         request.session["otp"] = otp
         request.session["email"] = email
 
-        send_mail(
-            "Your QuickJobs OTP Code",
-            f"Your OTP is {otp}",
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
+        print("QUICKJOBS OTP:", otp)
+
+        try:
+            send_mail(
+                "Your QuickJobs OTP Code",
+                f"Your OTP is {otp}",
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+                timeout=10,
+            )
+        except Exception as e:
+            print("EMAIL ERROR:", e)
 
         return redirect("otp")
 
