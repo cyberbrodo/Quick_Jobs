@@ -34,7 +34,6 @@ def send_otp(request):
                 settings.EMAIL_HOST_USER,
                 [email],
                 fail_silently=False,
-                timeout=10,
             )
         except Exception as e:
             print("EMAIL ERROR:", e)
