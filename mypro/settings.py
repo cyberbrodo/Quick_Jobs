@@ -138,9 +138,9 @@ EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = os.getenv("quickjobs073@gmail.com")
-EMAIL_HOST_PASSWORD = os.getenv("htfn ofwd vpkw xelf")
-DEFAULT_FROM_EMAIL = os.getenv("BREVO_FROM_EMAIL", EMAIL_HOST_USER)
+EMAIL_HOST_USER = os.getenv("BREVO_SMTP_USER")
+EMAIL_HOST_PASSWORD = os.getenv("BREVO_SMTP_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("BREVO_FROM_EMAIL")
 
 EMAIL_TIMEOUT = 30
 
