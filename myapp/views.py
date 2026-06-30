@@ -21,10 +21,12 @@ def send_otp(request):
         request.session['otp'] = otp
         request.session['email'] = email
 
+        from django.conf import settings
+
         send_mail(
             "Your OTP Code",
             f"Your OTP is {otp}",
-            "quickjobs073@gmail.com",
+            settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
