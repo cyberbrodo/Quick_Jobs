@@ -23,13 +23,18 @@ def send_otp(request):
 
         from django.conf import settings
 
-        send_mail(
-            "Your OTP Code",
-            f"Your OTP is {otp}",
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                "Your OTP Code",
+                f"Your OTP is {otp}",
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print("EMAIL ERROR:", e)
+            messages.error(request, "OTP send failed. Try again later.")
+            return redirect("login")
 
         return redirect("otp")
 
