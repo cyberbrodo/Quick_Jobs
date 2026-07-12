@@ -22,7 +22,7 @@ urlpatterns = [
     path("", views.home, name="home"),
 
     path("login/", views.send_otp, name="login"),
-    path("otp/", views.verify_otp, name="otp"),
+    path("firebase-login/", views.firebase_login, name="firebase_login"),
     path("logout/", views.logout_user, name="logout_user"),
 
     path("profile/", views.profile, name="profile"),
@@ -32,6 +32,7 @@ urlpatterns = [
     path("delete-job/<int:id>/", views.delete_job, name="delete_job"),
 
     path("saved-jobs/", views.saved_jobs, name="saved_jobs"),
+    path("login/", views.send_otp, name="login"),
     path("save-job/<int:id>/", views.save_job, name="save_job"),
     path("remove-saved-job/<int:id>/", views.remove_saved_job, name="remove_saved_job"),
 path("job/<int:id>/", views.job_details, name="job_details"),

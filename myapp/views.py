@@ -13,61 +13,56 @@ from .models import Job, SavedJob, Category
 
 
 
-def send_otp(request):
+import json
+
+from django.http import JsonResponse
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+
+
+def firebase_login(request):
     if request.method == "POST":
-        email = request.POST.get('email')
-        otp = str(random.randint(100000, 999999))
+        try:
+            data = json.loads(request.body)
 
-        request.session['otp'] = otp
-        request.session['email'] = email
+            phone = data.get("phone", "").strip()
 
-        send_mail(
-            "Your OTP Code",
-            f"Your OTP is {otp}",
-            "quickjobs073@gmail.com",
-            [email],
-            fail_silently=False,
-        )
+            if not phone:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Phone number missing"
+                }, status=400)
 
-        return redirect("otp")
-
-    return render(request, "email.html")
-
-
-def verify_otp(request):
-    if request.method == "POST":
-        otp = (
-            request.POST.get('otp1', '') +
-            request.POST.get('otp2', '') +
-            request.POST.get('otp3', '') +
-            request.POST.get('otp4', '') +
-            request.POST.get('otp5', '') +
-            request.POST.get('otp6', '')
-        )
-
-        saved_otp = request.session.get('otp')
-        email = request.session.get('email')
-
-        if otp == saved_otp and email:
-            username = email.split("@")[0]
+            username = phone.replace("+", "")
 
             user, created = User.objects.get_or_create(
                 username=username,
-                defaults={"email": email}
+                defaults={
+                    "first_name": "QuickJobs User"
+                }
             )
 
             login(request, user)
 
-            request.session.pop('otp', None)
-            request.session.pop('email', None)
+            return JsonResponse({
+                "success": True
+            })
 
-            messages.success(request, "Login successful!")
-            return redirect("home")
+        except Exception as error:
+            print("FIREBASE LOGIN ERROR:", error)
 
-        messages.error(request, "Invalid OTP. try again.")
-        return redirect("otp")
+            return JsonResponse({
+                "success": False,
+                "message": "Login failed"
+            }, status=500)
 
-    return render(request, "otp.html")
+    return JsonResponse({
+        "success": False,
+        "message": "POST request required"
+    }, status=405)
+
+def send_otp(request):
+    return render(request, "email.html")
 
 
 

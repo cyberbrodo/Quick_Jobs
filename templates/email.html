@@ -3,21 +3,261 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>QuickJobs Login</title>
+
 <link href="{% static 'css/email.css' %}" rel="stylesheet">
 </head>
+
 <body>
 
 <div class="login-card">
+
 <h1>Quick<span>Jobs.</span></h1>
 <p class="tagline">Empowering your career</p>
 
-<form method="post">
-{% csrf_token %}
-<input type="email" placeholder="Enter Your Email" name="email" required>
-<button type="submit">Login →</button>
-</form>
+<!-- PHONE SECTION -->
+<div id="phoneSection">
+
+<input
+    type="tel"
+    id="phone"
+    placeholder="Enter mobile number"
+    maxlength="10"
+    inputmode="numeric"
+    required
+>
+
+<div id="recaptcha-container"></div>
+
+<button type="button" id="sendOtpBtn">
+    Send OTP →
+</button>
+
 </div>
 
+
+<!-- OTP SECTION -->
+<div id="otpSection" style="display:none;">
+
+<p>Enter the 6 digit OTP</p>
+
+<input
+    type="text"
+    id="otp"
+    placeholder="Enter OTP"
+    maxlength="6"
+    inputmode="numeric"
+>
+
+<button type="button" id="verifyOtpBtn">
+    Verify OTP →
+</button>
+
+</div>
+
+<p id="message"></p>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAnI8mX3rqgWQs5tZ3eeaNZK6NUze648Vk",
+    authDomain: "quickjobs-acd4a.firebaseapp.com",
+    projectId: "quickjobs-acd4a",
+    storageBucket: "quickjobs-acd4a.firebasestorage.app",
+    messagingSenderId: "736989435005",
+    appId: "1:736989435005:web:dd292c2e284970fdffcd14",
+    measurementId: "G-64JYBH3G48"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+auth.useDeviceLanguage();
+
+const phoneInput = document.getElementById("phone");
+const otpInput = document.getElementById("otp");
+
+const sendOtpBtn = document.getElementById("sendOtpBtn");
+const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+
+const phoneSection = document.getElementById("phoneSection");
+const otpSection = document.getElementById("otpSection");
+const message = document.getElementById("message");
+
+
+window.recaptchaVerifier = new RecaptchaVerifier(
+    auth,
+    "recaptcha-container",
+    {
+        size: "normal"
+    }
+);
+
+
+sendOtpBtn.addEventListener("click", async function () {
+
+    const mobile = phoneInput.value.trim();
+
+    if (!/^[6-9]\d{9}$/.test(mobile)) {
+        message.innerText = "Enter a valid 10 digit mobile number";
+        return;
+    }
+
+    const phoneNumber = "+91" + mobile;
+
+    sendOtpBtn.disabled = true;
+    sendOtpBtn.innerText = "Sending OTP...";
+
+    try {
+
+        window.confirmationResult = await signInWithPhoneNumber(
+            auth,
+            phoneNumber,
+            window.recaptchaVerifier
+        );
+
+        sessionStorage.setItem("quickjobs_phone", phoneNumber);
+
+        phoneSection.style.display = "none";
+        otpSection.style.display = "block";
+
+        message.innerText = "OTP sent successfully";
+
+        otpInput.focus();
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+            error.message || "Unable to send OTP";
+
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.innerText = "Send OTP →";
+
+        window.recaptchaVerifier.clear();
+
+        window.recaptchaVerifier = new RecaptchaVerifier(
+            auth,
+            "recaptcha-container",
+            {
+                size: "normal"
+            }
+        );
+    }
+});
+
+
+verifyOtpBtn.addEventListener("click", async function () {
+
+    const otp = otpInput.value.trim();
+
+    if (!/^\d{6}$/.test(otp)) {
+        message.innerText = "Enter the valid 6 digit OTP";
+        return;
+    }
+
+    if (!window.confirmationResult) {
+        message.innerText = "Please send OTP again";
+        return;
+    }
+
+    verifyOtpBtn.disabled = true;
+    verifyOtpBtn.innerText = "Verifying...";
+
+    try {
+
+        const result = await window.confirmationResult.confirm(otp);
+
+        const phoneNumber = result.user.phoneNumber;
+
+        await loginDjango(phoneNumber);
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.innerText = "Invalid OTP. Try again.";
+
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.innerText = "Verify OTP →";
+    }
+});
+
+
+async function loginDjango(phoneNumber) {
+
+    const response = await fetch("{% url 'firebase_login' %}", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+
+        body: JSON.stringify({
+            phone: phoneNumber
+        })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+        window.location.href = "{% url 'home' %}";
+    } else {
+        message.innerText =
+            data.message || "Django login failed";
+
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.innerText = "Verify OTP →";
+    }
+}
+
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+</script>
+
 </body>
+</html>
 </html>
