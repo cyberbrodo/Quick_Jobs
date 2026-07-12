@@ -13,6 +13,9 @@ from .models import Job, SavedJob, Category
 
 
 
+
+
+
 import json
 
 from django.http import JsonResponse
@@ -22,44 +25,38 @@ from django.contrib.auth.models import User
 
 def firebase_login(request):
     if request.method == "POST":
-        try:
-            data = json.loads(request.body)
+        data = json.loads(request.body)
 
-            phone = data.get("phone", "").strip()
+        phone = data.get("phone", "").strip()
 
-            if not phone:
-                return JsonResponse({
-                    "success": False,
-                    "message": "Phone number missing"
-                }, status=400)
-
-            username = phone.replace("+", "")
-
-            user, created = User.objects.get_or_create(
-                username=username,
-                defaults={
-                    "first_name": "QuickJobs User"
-                }
-            )
-
-            login(request, user)
-
-            return JsonResponse({
-                "success": True
-            })
-
-        except Exception as error:
-            print("FIREBASE LOGIN ERROR:", error)
-
+        if not phone:
             return JsonResponse({
                 "success": False,
-                "message": "Login failed"
-            }, status=500)
+                "message": "Phone number missing"
+            }, status=400)
+
+        username = phone.replace("+", "")
+
+        user, created = User.objects.get_or_create(
+            username=username
+        )
+
+        login(request, user)
+
+        if created or not user.first_name:
+            redirect_url = "/complete-profile/"
+        else:
+            redirect_url = "/"
+
+        return JsonResponse({
+            "success": True,
+            "redirect_url": redirect_url
+        })
 
     return JsonResponse({
-        "success": False,
-        "message": "POST request required"
+        "success": False
     }, status=405)
+
 
 def send_otp(request):
     return render(request, "email.html")
@@ -235,3 +232,25 @@ def logout_user(request):
 def job_details(request, id):
     job = get_object_or_404(Job, id=id, is_verified=True)
     return render(request, "job_details.html", {"job": job})
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+
+@login_required(login_url="login")
+def complete_profile(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+
+        if not name:
+            messages.error(request, "Please enter your name")
+            return redirect("complete_profile")
+
+        request.user.first_name = name
+        request.user.save(update_fields=["first_name"])
+
+        return redirect("home")
+
+    return render(request, "complete_profile.html")

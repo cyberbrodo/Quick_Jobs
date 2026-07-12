@@ -51,7 +51,7 @@ value="{{ request.GET.place }}"
 <button class="profile-btn" type="button" onclick="toggleProfile()">
 
 {% if user.is_authenticated %}
-{{ user.username }} ⌄
+{{ user.first_name|default:user.username }} ⌄
 {% else %}
 Login ⌄
 {% endif %}
@@ -75,7 +75,7 @@ Login ⌄
 
 <section class="welcome">
 {% if user.is_authenticated %}
-<h2>Welcome, {{ user.username }}</h2>
+<h2>Welcome, {{ user.first_name|default:user.username }}</h2>
 {% else %}
 <h2>Welcome to QuickJobs</h2>
 {% endif %}

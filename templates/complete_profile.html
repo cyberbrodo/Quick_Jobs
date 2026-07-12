@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Profile | QuickJobs</title>
+<link href="{% static 'css/email.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="login-card">
+
+<h1>Quick<span>Jobs.</span></h1>
+<p class="tagline">Complete your profile</p>
+
+<form method="POST">
+{% csrf_token %}
+
+<input
+    type="text"
+    name="name"
+    placeholder="Enter your name"
+    required
+>
+
+<button type="submit">
+Continue →
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
