@@ -26,6 +26,7 @@
     placeholder="Enter mobile number"
     maxlength="10"
     inputmode="numeric"
+    autocomplete="tel"
     required
 >
 
@@ -49,10 +50,19 @@
     placeholder="Enter OTP"
     maxlength="6"
     inputmode="numeric"
+    autocomplete="one-time-code"
 >
 
 <button type="button" id="verifyOtpBtn">
     Verify OTP →
+</button>
+
+<button
+    type="button"
+    id="resendOtpBtn"
+    disabled
+>
+    Resend OTP in 60s
 </button>
 
 </div>
@@ -91,24 +101,100 @@ const auth = getAuth(app);
 
 auth.useDeviceLanguage();
 
+
 const phoneInput = document.getElementById("phone");
 const otpInput = document.getElementById("otp");
 
 const sendOtpBtn = document.getElementById("sendOtpBtn");
 const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+const resendOtpBtn = document.getElementById("resendOtpBtn");
 
 const phoneSection = document.getElementById("phoneSection");
 const otpSection = document.getElementById("otpSection");
 const message = document.getElementById("message");
 
 
-window.recaptchaVerifier = new RecaptchaVerifier(
-    auth,
-    "recaptcha-container",
-    {
-        size: "normal"
+let resendTimer = null;
+let resendSeconds = 60;
+let resendAttempts = 0;
+
+const maxResendAttempts = 3;
+
+
+function createRecaptcha() {
+    if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
     }
-);
+
+    window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+            size: "normal"
+        }
+    );
+}
+
+
+function startResendTimer() {
+    clearInterval(resendTimer);
+
+    resendSeconds = 60;
+    resendOtpBtn.disabled = true;
+    resendOtpBtn.innerText =
+        `Resend OTP in ${resendSeconds}s`;
+
+    resendTimer = setInterval(() => {
+        resendSeconds--;
+
+        if (resendSeconds > 0) {
+            resendOtpBtn.innerText =
+                `Resend OTP in ${resendSeconds}s`;
+        } else {
+            clearInterval(resendTimer);
+
+            if (resendAttempts < maxResendAttempts) {
+                resendOtpBtn.disabled = false;
+                resendOtpBtn.innerText = "Resend OTP";
+            } else {
+                resendOtpBtn.disabled = true;
+                resendOtpBtn.innerText =
+                    "Maximum resend limit reached";
+            }
+        }
+    }, 1000);
+}
+
+
+function showFirebaseError(error) {
+    console.error(error);
+
+    if (error.code === "auth/too-many-requests") {
+        message.innerText =
+            "Too many OTP attempts. Please wait and try again later.";
+    } else if (error.code === "auth/quota-exceeded") {
+        message.innerText =
+            "OTP service limit reached. Please try again later.";
+    } else if (error.code === "auth/invalid-phone-number") {
+        message.innerText =
+            "Enter a valid mobile number.";
+    } else if (error.code === "auth/captcha-check-failed") {
+        message.innerText =
+            "Verification failed. Refresh the page and try again.";
+    } else if (error.code === "auth/code-expired") {
+        message.innerText =
+            "OTP expired. Please resend OTP.";
+    } else if (error.code === "auth/invalid-verification-code") {
+        message.innerText =
+            "Invalid OTP. Please try again.";
+    } else {
+        message.innerText =
+            "OTP could not be sent. Please try again.";
+    }
+}
+
+
+createRecaptcha();
 
 
 sendOtpBtn.addEventListener("click", async function () {
@@ -116,7 +202,8 @@ sendOtpBtn.addEventListener("click", async function () {
     const mobile = phoneInput.value.trim();
 
     if (!/^[6-9]\d{9}$/.test(mobile)) {
-        message.innerText = "Enter a valid 10 digit mobile number";
+        message.innerText =
+            "Enter a valid 10 digit mobile number";
         return;
     }
 
@@ -124,43 +211,96 @@ sendOtpBtn.addEventListener("click", async function () {
 
     sendOtpBtn.disabled = true;
     sendOtpBtn.innerText = "Sending OTP...";
+    message.innerText = "";
 
     try {
 
-        window.confirmationResult = await signInWithPhoneNumber(
-            auth,
-            phoneNumber,
-            window.recaptchaVerifier
-        );
+        window.confirmationResult =
+            await signInWithPhoneNumber(
+                auth,
+                phoneNumber,
+                window.recaptchaVerifier
+            );
 
-        sessionStorage.setItem("quickjobs_phone", phoneNumber);
+        sessionStorage.setItem(
+            "quickjobs_phone",
+            phoneNumber
+        );
 
         phoneSection.style.display = "none";
         otpSection.style.display = "block";
 
-        message.innerText = "OTP sent successfully";
+        message.innerText =
+            "OTP sent successfully";
 
         otpInput.focus();
 
+        startResendTimer();
+
     } catch (error) {
 
-        console.error(error);
-
-        message.innerText =
-            error.message || "Unable to send OTP";
+        showFirebaseError(error);
 
         sendOtpBtn.disabled = false;
         sendOtpBtn.innerText = "Send OTP →";
 
-        window.recaptchaVerifier.clear();
+        createRecaptcha();
+    }
+});
 
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            auth,
-            "recaptcha-container",
-            {
-                size: "normal"
-            }
-        );
+
+resendOtpBtn.addEventListener("click", async function () {
+
+    if (resendAttempts >= maxResendAttempts) {
+        message.innerText =
+            "Maximum resend attempts reached. Please try again later.";
+
+        resendOtpBtn.disabled = true;
+        return;
+    }
+
+    const phoneNumber =
+        sessionStorage.getItem("quickjobs_phone");
+
+    if (!phoneNumber) {
+        message.innerText =
+            "Phone number missing. Please refresh and try again.";
+        return;
+    }
+
+    resendOtpBtn.disabled = true;
+    resendOtpBtn.innerText = "Resending...";
+    message.innerText = "";
+
+    try {
+
+        createRecaptcha();
+
+        window.confirmationResult =
+            await signInWithPhoneNumber(
+                auth,
+                phoneNumber,
+                window.recaptchaVerifier
+            );
+
+        resendAttempts++;
+
+        message.innerText =
+            "OTP resent successfully";
+
+        otpInput.value = "";
+        otpInput.focus();
+
+        startResendTimer();
+
+    } catch (error) {
+
+        showFirebaseError(error);
+
+        resendOtpBtn.disabled = false;
+        resendOtpBtn.innerText = "Resend OTP";
+
+        createRecaptcha();
     }
 });
 
@@ -170,31 +310,34 @@ verifyOtpBtn.addEventListener("click", async function () {
     const otp = otpInput.value.trim();
 
     if (!/^\d{6}$/.test(otp)) {
-        message.innerText = "Enter the valid 6 digit OTP";
+        message.innerText =
+            "Enter a valid 6 digit OTP";
         return;
     }
 
     if (!window.confirmationResult) {
-        message.innerText = "Please send OTP again";
+        message.innerText =
+            "Please send OTP again";
         return;
     }
 
     verifyOtpBtn.disabled = true;
     verifyOtpBtn.innerText = "Verifying...";
+    message.innerText = "";
 
     try {
 
-        const result = await window.confirmationResult.confirm(otp);
+        const result =
+            await window.confirmationResult.confirm(otp);
 
-        const phoneNumber = result.user.phoneNumber;
+        const phoneNumber =
+            result.user.phoneNumber;
 
         await loginDjango(phoneNumber);
 
     } catch (error) {
 
-        console.error(error);
-
-        message.innerText = "Invalid OTP. Try again.";
+        showFirebaseError(error);
 
         verifyOtpBtn.disabled = false;
         verifyOtpBtn.innerText = "Verify OTP →";
@@ -204,27 +347,40 @@ verifyOtpBtn.addEventListener("click", async function () {
 
 async function loginDjango(phoneNumber) {
 
-    const response = await fetch("{% url 'firebase_login' %}", {
-        method: "POST",
+    try {
+        const response = await fetch(
+            "{% url 'firebase_login' %}",
+            {
+                method: "POST",
 
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCookie("csrftoken")
-        },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
 
-        body: JSON.stringify({
-            phone: phoneNumber
-        })
-    });
+                body: JSON.stringify({
+                    phone: phoneNumber
+                })
+            }
+        );
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (response.ok && data.success) {
-    window.location.href = data.redirect_url;
-}
-     else {
+        if (response.ok && data.success) {
+            window.location.href = data.redirect_url;
+        } else {
+            message.innerText =
+                data.message || "Django login failed";
+
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.innerText = "Verify OTP →";
+        }
+
+    } catch (error) {
+        console.error(error);
+
         message.innerText =
-            data.message || "Django login failed";
+            "Server connection failed. Please try again.";
 
         verifyOtpBtn.disabled = false;
         verifyOtpBtn.innerText = "Verify OTP →";
@@ -245,6 +401,7 @@ function getCookie(name) {
             cookie = cookie.trim();
 
             if (cookie.startsWith(name + "=")) {
+
                 cookieValue = decodeURIComponent(
                     cookie.substring(name.length + 1)
                 );
@@ -260,5 +417,4 @@ function getCookie(name) {
 </script>
 
 </body>
-</html>
 </html>

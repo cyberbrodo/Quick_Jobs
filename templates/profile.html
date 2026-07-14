@@ -17,13 +17,23 @@
 <label>Name</label>
 <input
     type="text"
-    value="{{ request.user.first_name|default:request.user.username }}"
-    disabled
+    value="{{ request.user.profile.full_name|default:request.user.first_name }}"
+    readonly
 >
-    <label>Phone Number</label>
-<input type="text" value="{{ request.user.username }}" disabled>
 
+<label>Phone Number</label>
+<input
+    type="text"
+    value="{{ request.user.profile.phone }}"
+    readonly
+>
 
+<label>District</label>
+<input
+    type="text"
+    value="{{ request.user.profile.district|default:'Not added' }}"
+    readonly
+>
 <a href="{% url 'logout_user' %}">
 <button class="logout-btn">Logout</button>
 </a>

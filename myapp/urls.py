@@ -29,7 +29,7 @@ urlpatterns = [
 
     path("add-job/", views.add_job, name="add_job"),
     path("edit-job/<int:id>/", views.edit_job, name="edit_job"),
-    path("delete-job/<int:id>/", views.delete_job, name="delete_job"),
+    path("delete-job/<int:job_id>/",views.delete_job,name="delete_job"),
 
     path("saved-jobs/", views.saved_jobs, name="saved_jobs"),
     path("login/", views.send_otp, name="login"),

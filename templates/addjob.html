@@ -4,7 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Add Job | QuickJobs</title>
+
+<title>
+    {% if job %}Edit Job{% else %}Add Job{% endif %} | QuickJobs
+</title>
+
 <link rel="stylesheet" href="{% static 'css/addjob.css' %}">
 </head>
 
@@ -12,58 +16,170 @@
 
 <div class="job-form">
 
-<h2>Add Job Vacancy</h2>
+<h2>
+    {% if job %}
+        Edit Job Vacancy
+    {% else %}
+        Add Job Vacancy
+    {% endif %}
+</h2>
 
-<form method="POST" enctype="multipart/form-data">
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+    autocomplete="off"
+>
 {% csrf_token %}
-
-<input type="text" name="shop_name" placeholder="Company / Shop Name" required>
-
-<input type="text" name="title" placeholder="Job Title" required>
-
-<label>Category</label>
 
 <input
     type="text"
-    name="category"
-    placeholder="Category (Example: Bakery, Mobile Shop, Jewellery)"
-    value="{% if job %}{{ job.category.name }}{% endif %}"
+    name="shop_name"
+    placeholder="Company / Shop Name"
+    value="{% if job %}{{ job.shop_name }}{% else %}{{ form_data.shop_name }}{% endif %}"
     required
 >
-</select>
 
-<select name="experience">
-<option value="">Experience</option>
-<option>Fresher</option>
-    <option>No experience</option>
-<option>0-1 Year</option>
-<option>1-2 Years</option>
+<input
+    type="text"
+    name="title"
+    placeholder="Job Title"
+    value="{% if job %}{{ job.title }}{% else %}{{ form_data.title }}{% endif %}"
+    required
+>
+
+<input
+    type="text"
+    id="category"
+    name="category"
+    placeholder="Category (Example: Bakery, Mobile Shop, Jewellery)"
+    value="{% if job and job.category %}{{ job.category.name }}{% else %}{{ form_data.category }}{% endif %}"
+    required
+>
+
+<select name="experience" required>
+    <option value="">Select Experience</option>
+
+    <option value="Fresher"
+        {% if job and job.experience == "Fresher" or form_data.experience == "Fresher" %}selected{% endif %}>
+        Fresher
+    </option>
+
+    <option value="No experience"
+        {% if job and job.experience == "No experience" or form_data.experience == "No experience" %}selected{% endif %}>
+        No experience
+    </option>
+
+    <option value="0-1 Year"
+        {% if job and job.experience == "0-1 Year" or form_data.experience == "0-1 Year" %}selected{% endif %}>
+        0-1 Year
+    </option>
+
+    <option value="1-2 Years"
+        {% if job and job.experience == "1-2 Years" or form_data.experience == "1-2 Years" %}selected{% endif %}>
+        1-2 Years
+    </option>
+
+    <option value="2-3 Years"
+        {% if job and job.experience == "2-3 Years" or form_data.experience == "2-3 Years" %}selected{% endif %}>
+        2-3 Years
+    </option>
+
+    <option value="3+ Years"
+        {% if job and job.experience == "3+ Years" or form_data.experience == "3+ Years" %}selected{% endif %}>
+        3+ Years
+    </option>
 </select>
 
 <select name="work_time" required>
-<option value="">Work Time</option>
-<option>Full Time</option>
-<option>Part Time</option>
-<option>Shift Based</option>
+    <option value="">Select Work Time</option>
+
+    <option value="Full Time"
+        {% if job and job.work_time == "Full Time" or form_data.work_time == "Full Time" %}selected{% endif %}>
+        Full Time
+    </option>
+
+    <option value="Part Time"
+        {% if job and job.work_time == "Part Time" or form_data.work_time == "Part Time" %}selected{% endif %}>
+        Part Time
+    </option>
+
+    <option value="Shift Based"
+        {% if job and job.work_time == "Shift Based" or form_data.work_time == "Shift Based" %}selected{% endif %}>
+        Shift Based
+    </option>
+
+    <option value="Day Shift"
+        {% if job and job.work_time == "Day Shift" or form_data.work_time == "Day Shift" %}selected{% endif %}>
+        Day Shift
+    </option>
+
+    <option value="Night Shift"
+        {% if job and job.work_time == "Night Shift" or form_data.work_time == "Night Shift" %}selected{% endif %}>
+        Night Shift
+    </option>
 </select>
 
+<input
+    type="text"
+    name="age_limit"
+    placeholder="Age Limit"
+    value="{% if job %}{{ job.age_limit }}{% else %}{{ form_data.age_limit }}{% endif %}"
+>
+
+<input
+    type="text"
+    name="location"
+    placeholder="Location"
+    value="{% if job %}{{ job.location }}{% else %}{{ form_data.location }}{% endif %}"
+    required
+>
+
+<input
+    type="text"
+    name="salary"
+    placeholder="Salary"
+    value="{% if job %}{{ job.salary }}{% else %}{{ form_data.salary }}{% endif %}"
+    required
+>
+
+<label>Owner Name</label>
+
+<input
+    type="text"
+    value="{% if job %}{{ job.owner_name }}{% else %}{{ owner_name }}{% endif %}"
+    readonly
+>
+
+<input
+    type="tel"
+    name="phone"
+    placeholder="Phone Number"
+    maxlength="10"
+    inputmode="numeric"
+    value="{% if job %}{{ job.phone }}{% else %}{{ form_data.phone }}{% endif %}"
+    required
+>
 
 
-<input type="text" name="age_limit" placeholder="Age Limit">
 
-<input type="text" name="location" placeholder="Location" required>
+<textarea
+    name="description"
+    placeholder="Job Description"
+>{% if job %}{{ job.description }}{% else %}{{ form_data.description }}{% endif %}</textarea>
 
-<input type="text" name="salary" placeholder="Salary" required>
-
-<input type="text" name="owner_name" placeholder="Owner Name">
-
-<input type="email" name="owner_email" value="{{ request.user.email }}" placeholder="Email">
-
-<input type="tel" name="phone" placeholder="Phone number" required>
-
-<textarea name="description" placeholder="Job Description"></textarea>
-
-<button type="submit" id="addBtn">Add Job</button>
+<button type="submit" id="addBtn">
+    {% if job %}
+        Update Job
+    {% else %}
+        Add Job
+    {% endif %}
+</button>
 
 </form>
 

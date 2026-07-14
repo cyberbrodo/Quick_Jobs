@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Complete Profile | QuickJobs</title>
+
 <link href="{% static 'css/email.css' %}" rel="stylesheet">
 </head>
 
@@ -15,18 +17,37 @@
 <h1>Quick<span>Jobs.</span></h1>
 <p class="tagline">Complete your profile</p>
 
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
 <form method="POST">
 {% csrf_token %}
+
+<label>Your Name</label>
 
 <input
     type="text"
     name="name"
     placeholder="Enter your name"
+    value="{{ profile.full_name|default:request.user.first_name }}"
+    autocomplete="name"
     required
 >
 
+<label>District</label>
+
+<input
+    type="text"
+    name="district"
+    placeholder="Enter district"
+    value="{{ profile.district }}"
+>
+
 <button type="submit">
-Continue →
+    Save and Continue →
 </button>
 
 </form>
