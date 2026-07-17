@@ -25,12 +25,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=%i+nitrzph%&4v=*a5cx0o%#n-+jrich7ducf)tqz29m%hp2('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "quick-jobs.onrender.com",
+    "quick-jobs.in",
+    "www.quick-jobs.in",
     "localhost",
     "127.0.0.1",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://quick-jobs.in",
+    "https://www.quick-jobs.in",
 ]
 
 
