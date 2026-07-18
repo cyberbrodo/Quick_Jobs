@@ -156,6 +156,3 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 
-# admin pass
-# user;mmvk
-# pass;mmvk12

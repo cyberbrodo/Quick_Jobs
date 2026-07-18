@@ -1,0 +1,108 @@
+*{
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+margin:0;
+min-height:100vh;
+background:#f5f6fa;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+padding:30px 15px;
+}
+
+.job-form{
+width:100%;
+max-width:520px;
+background:white;
+padding:28px;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.job-form h2{
+text-align:center;
+margin-bottom:25px;
+color:#0a3d62;
+}
+
+.job-form input,
+.job-form select,
+.job-form textarea{
+width:100%;
+padding:13px;
+margin-bottom:14px;
+border-radius:10px;
+border:1px solid #ccc;
+outline:none;
+font-size:15px;
+}
+
+.job-form textarea{
+height:100px;
+resize:none;
+}
+
+.job-form input:focus,
+.job-form select:focus,
+.job-form textarea:focus{
+border-color:#1dd1a1;
+box-shadow:0 0 0 3px rgba(29,209,161,0.15);
+}
+
+#addBtn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:25px;
+background:#1dd1a1;
+color:#003f36;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+#addBtn:hover{
+background:#17b593;
+}
+
+.job-form a{
+display:block;
+text-align:center;
+margin-top:18px;
+text-decoration:none;
+color:#0a3d62;
+font-weight:bold;
+}
+
+@media(max-width:600px){
+
+body{
+padding:15px;
+}
+
+.job-form{
+padding:22px;
+border-radius:14px;
+}
+
+.job-form h2{
+font-size:22px;
+}
+
+.job-form input,
+.job-form select,
+.job-form textarea{
+font-size:14px;
+padding:12px;
+}
+
+#addBtn{
+font-size:15px;
+padding:13px;
+}
+
+}

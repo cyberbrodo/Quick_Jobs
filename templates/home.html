@@ -6,6 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QuickJobs | Home</title>
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+<meta name="theme-color" content="#2563eb">
+<link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
 </head>
 
 <body>
@@ -162,7 +165,16 @@ inputs.forEach(input => {
     });
 });
 
+function toggleProfile(){
+document.getElementById("profileMenu").classList.toggle("show");
+}
+</script>
 
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/sw.js")
+    .then(() => console.log("Service Worker Registered"));
+}
 
 
 </script>
