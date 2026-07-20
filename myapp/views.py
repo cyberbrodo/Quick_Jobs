@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import (Category, Job, SavedJob,Profile,ActivityLog,)
 
@@ -46,6 +47,7 @@ def send_otp(request):
 # Later Firebase ID token backend verification add cheyyanam.
 # =========================================================
 
+@csrf_exempt
 def firebase_login(request):
     if request.method != "POST":
         return JsonResponse(
