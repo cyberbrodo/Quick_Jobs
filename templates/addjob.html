@@ -162,7 +162,8 @@
     placeholder="Phone Number"
     maxlength="10"
     inputmode="numeric"
-    value="{% if job %}{{ job.phone }}{% else %}{{ form_data.phone }}{% endif %}"
+    value="{% if job %}{{ job.phone }}{% else %}{{ owner_phone }}{% endif %}"
+    readonly
     required
 >
 

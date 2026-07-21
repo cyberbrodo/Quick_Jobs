@@ -93,18 +93,42 @@
 </div>
 </header>
 
-<section class="welcome">
 {% if user.is_authenticated %}
-<h2>
-    Welcome,
-    {{ user.profile.full_name|default:user.first_name }}
-</h2>
+
+<section class="welcome">
+
+    <h2>
+        Welcome,
+        {{ user.profile.full_name|default:user.first_name }}
+    </h2>
+
+    <p>Find Part-time &amp; Full-time jobs near you.</p>
+
+</section>
+
 {% else %}
-<h2>Welcome to QuickJobs</h2>
+
+<section class="hero">
+
+    <h1>Welcome to <span>QuickJobs</span></h1>
+
+    <p>
+        Find Part-time &amp; Full-time jobs near you.<br>
+        Trusted employers. Fast &amp; Easy hiring.
+    </p>
+
+    <div class="hero-buttons">
+        <a href="{% url 'login' %}" class="start-btn">
+            Get Started →
+        </a>
+    </div>
+
+</section>
+
 {% endif %}
 
-<p>Find part-time and full-time jobs near you</p>
-</section>
+
+{% if user.is_authenticated %}
 
 <section class="job-list">
 
@@ -112,53 +136,48 @@
 
 <div class="job-card">
 
+    <a href="{% url 'save_job' job.id %}" class="save-btn">
+        {% if job.id in saved_job_ids %}
+            <i class="fa-solid fa-bookmark"></i>
+        {% else %}
+            <i class="fa-regular fa-bookmark"></i>
+        {% endif %}
+    </a>
 
+    <div class="job-main">
+        <h3>{{ job.shop_name }}</h3>
 
-<a href="{% url 'save_job' job.id %}" class="save-btn">
+        <p><b>Job:</b> {{ job.title }}</p>
 
-{% if job.id in saved_job_ids %}
-<i class="fa-solid fa-bookmark"></i>
-{% else %}
-<i class="fa-regular fa-bookmark"></i>
-{% endif %}
-</a>
+        <p class="exp">
+            Experience: {{ job.experience|default:"Fresher" }}
+        </p>
 
-<div class="job-main">
+        <p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
 
-<h3>{{ job.shop_name }}</h3>
+        <p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
 
-<p><b>Job:</b> {{ job.title }}</p>
+        <p><b>Location:</b> {{ job.location }}</p>
+    </div>
 
-<p class="exp">Experience: {{ job.experience|default:"Fresher" }}</p>
-
-<p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
-
-<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
-
-<!--<p><b>Category:</b> {{ job.category }}</p>-->
-
-<p><b>Location:</b> {{ job.location }}</p>
-
-<!--<p><b>Salary:</b> {{ job.salary }}</p>-->
-
-</div>
-
-<div class="contact-box">
-<a href="{% url 'job_details' job.id %}">
-<button class="details-btn">More Details</button>
-</a>
-
-</div>
+    <div class="contact-box">
+        <a href="{% url 'job_details' job.id %}">
+            <button class="details-btn">More Details</button>
+        </a>
+    </div>
 
 </div>
 
 {% empty %}
-
 <p class="no-job">No jobs available</p>
-
 {% endfor %}
-
 </section>
+
+{% else %}
+
+{% endif %}
+
+
 
 <script>
 function toggleProfile(){

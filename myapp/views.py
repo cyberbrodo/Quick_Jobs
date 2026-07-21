@@ -304,14 +304,16 @@ def profile(request):
 
 @login_required(login_url="login")
 def add_job(request):
-    profile = Profile.objects.filter(
-        user=request.user
-    ).first()
+    profile = Profile.objects.filter(user=request.user).first()
 
     owner_name = request.user.first_name.strip()
+    owner_phone = ""
 
-    if profile and profile.full_name.strip():
-        owner_name = profile.full_name.strip()
+    if profile:
+        if profile.full_name.strip():
+            owner_name = profile.full_name.strip()
+
+        owner_phone = profile.phone.strip()
 
     if not owner_name:
         return redirect("complete_profile")
@@ -424,6 +426,7 @@ def add_job(request):
         "addjob.html",
         {
             "owner_name": owner_name,
+            "owner_phone": owner_phone,
         },
     )
 #=========================================================
