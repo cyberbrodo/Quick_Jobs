@@ -9,70 +9,87 @@
     <link rel="manifest" href="{% static 'manifest.json' %}">
 <meta name="theme-color" content="white">
 <link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
 
 <header class="navbar">
-<div class="logo">
-<a href="{% url 'home' %}">Quick<span>Jobs</span></a>
-</div>
 
-<form class="search-box" method="GET" id="searchForm">
+    <div class="logo">
+        <a href="{% url 'home' %}">Quick<span>Jobs</span></a>
+    </div>
 
-<input
-type="text"
-class="search"
-name="q"
-placeholder="Search jobs..."
-value="{{ request.GET.q }}"
->
+    <div class="profile">
+        <button class="menu-btn" onclick="openMenu()">☰</button>
+    </div>
 
-<input
-type="text"
-class="search"
-name="place"
-placeholder="Enter place"
-value="{{ request.GET.place }}"
->
+    <form class="search-box" method="GET" id="searchForm">
 
-<select name="category" class="search">
-<option value="">All Categories</option>
+        <input
+        type="text"
+        class="search"
+        name="q"
+        placeholder="Search jobs..."
+        value="{{ request.GET.q }}">
 
-{% for cat in categories %}
-<option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
-{{ cat.name }}
-</option>
-{% endfor %}
+        <input
+        type="text"
+        class="search"
+        name="place"
+        placeholder="Enter place"
+        value="{{ request.GET.place }}">
 
-</select>
+        <select name="category" class="search">
+            <option value="">All Categories</option>
 
-</form>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}"
+            {% if request.GET.category == cat.id|stringformat:"s" %}
+            selected
+            {% endif %}>
+                {{ cat.name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+    </form>
+
+<!--</header>-->
 
 
 <div class="profile">
-<button class="profile-btn" type="button" onclick="toggleProfile()">
 
-{% if user.is_authenticated %}
-{{ user.first_name|default:user.username }} ⌄
-{% else %}
-Login ⌄
-{% endif %}
 
-</button>
-
-<div class="dropdown" id="profileMenu">
-
-{% if user.is_authenticated %}
-<a href="{% url 'profile' %}">My Profile</a>
-<a href="{% url 'add_job' %}">Add Job</a>
-<a href="{% url 'saved_jobs' %}">Saved Jobs</a>
-<a href="{% url 'logout_user' %}">Logout</a>
-{% else %}
-<a href="{% url 'login' %}">Login</a>
-{% endif %}
 
 </div>
+
+<div id="sideMenu" class="side-menu">
+
+<div class="menu-header">
+    <h3>QuickJobs</h3>
+    <span class="close-btn" onclick="closeMenu()">✕</span>
+</div>
+
+{% if user.is_authenticated %}
+
+<a href="{% url 'home' %}">Home</a>
+
+<a href="{% url 'profile' %}">My Profile</a>
+
+<a href="{% url 'saved_jobs' %}"> Saved Jobs</a>
+
+<a href="{% url 'add_job' %}"> Add Jobs</a>
+
+<a href="{% url 'logout_user' %}"> Logout</a>
+
+{% else %}
+
+<a href="{% url 'login' %}"> Login</a>
+
+{% endif %}
+
 </div>
 </header>
 
@@ -97,12 +114,13 @@ Login ⌄
 
 
 
-<a href="{% url 'save_job' job.id %}" class="save-icon">
-    {% if job.id in saved_job_ids %}
-        ❤️
-    {% else %}
-        🤍
-    {% endif %}
+<a href="{% url 'save_job' job.id %}" class="save-btn">
+
+{% if job.id in saved_job_ids %}
+<i class="fa-solid fa-bookmark"></i>
+{% else %}
+<i class="fa-regular fa-bookmark"></i>
+{% endif %}
 </a>
 
 <div class="job-main">
@@ -174,6 +192,26 @@ document.getElementById("profileMenu").classList.toggle("show");
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/static/sw.js")
     .then(() => console.log("Service Worker Registered"));
+}
+
+function openMenu(){
+    document.getElementById("sideMenu").classList.add("show");
+}
+
+function closeMenu(){
+    document.getElementById("sideMenu").classList.remove("show");
+}
+
+window.onclick = function(e){
+    const menu = document.getElementById("sideMenu");
+
+    if(
+        menu.classList.contains("show") &&
+        !menu.contains(e.target) &&
+        !e.target.classList.contains("menu-btn")
+    ){
+        closeMenu();
+    }
 }
 
 
