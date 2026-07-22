@@ -74,19 +74,31 @@
 
 {% if user.is_authenticated %}
 
-<a href="{% url 'home' %}">Home</a>
+<a href="{% url 'profile' %}">
+    <i class="fa-regular fa-user"></i>
+    My Profile
+</a>
 
-<a href="{% url 'profile' %}">My Profile</a>
+<a href="{% url 'saved_jobs' %}">
+    <i class="fa-regular fa-bookmark"></i>
+    Saved Jobs
+</a>
 
-<a href="{% url 'saved_jobs' %}"> Saved Jobs</a>
+<a href="{% url 'add_job' %}">
+     <i class="fa-solid fa-plus"></i>
+    Add Jobs
+</a>
 
-<a href="{% url 'add_job' %}"> Add Jobs</a>
-
-<a href="{% url 'logout_user' %}"> Logout</a>
+<a href="{% url 'logout_user' %}">
+    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    Logout</a>
 
 {% else %}
 
-<a href="{% url 'login' %}"> Login</a>
+<a href="{% url 'login' %}">
+    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    Login
+</a>
 
 {% endif %}
 
@@ -102,7 +114,10 @@
         {{ user.profile.full_name|default:user.first_name }}
     </h2>
 
-    <p>Find Part-time &amp; Full-time jobs near you.</p>
+    <p>
+        Find your next opportunity.<br>
+        Search jobs, save favourites and contact employers instantly.
+    </p>
 
 </section>
 
@@ -110,25 +125,25 @@
 
 <section class="hero">
 
-    <h1>Welcome to <span>QuickJobs</span></h1>
+    <h1>Welcome to <span>QuickJobs</span> </h1>
 
     <p>
-        Find Part-time &amp; Full-time jobs near you.<br>
-        Trusted employers. Fast &amp; Easy hiring.
-    </p>
 
-    <div class="hero-buttons">
-        <a href="{% url 'login' %}" class="start-btn">
-            Get Started →
-        </a>
-    </div>
+
+        ✔ Verified Employers<br>
+        ✔ Easy Job Search<br>
+        ✔ Fast Hiring Process<br><br>
+
+        Browse available jobs below.<br>
+        Login to view full job details and contact employers.
+    </p>
 
 </section>
 
 {% endif %}
 
 
-{% if user.is_authenticated %}
+
 
 <section class="job-list">
 
@@ -136,47 +151,61 @@
 
 <div class="job-card">
 
-    <a href="{% url 'save_job' job.id %}" class="save-btn">
-        {% if job.id in saved_job_ids %}
-            <i class="fa-solid fa-bookmark"></i>
-        {% else %}
-            <i class="fa-regular fa-bookmark"></i>
-        {% endif %}
-    </a>
+{% if user.is_authenticated %}
+<a href="{% url 'save_job' job.id %}" class="save-btn">
+    {% if job.id in saved_job_ids %}
+        <i class="fa-solid fa-bookmark"></i>
+    {% else %}
+        <i class="fa-regular fa-bookmark"></i>
+    {% endif %}
+</a>
+{% endif %}
 
-    <div class="job-main">
-        <h3>{{ job.shop_name }}</h3>
+<div class="job-main">
 
-        <p><b>Job:</b> {{ job.title }}</p>
+<h3>{{ job.shop_name }}</h3>
 
-        <p class="exp">
-            Experience: {{ job.experience|default:"Fresher" }}
-        </p>
+<p><b>Job:</b> {{ job.title }}</p>
 
-        <p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
+<p class="exp">
+{{ job.experience|default:"Fresher" }}
+</p>
 
-        <p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
+<p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
 
-        <p><b>Location:</b> {{ job.location }}</p>
-    </div>
+<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
 
-    <div class="contact-box">
-        <a href="{% url 'job_details' job.id %}">
-            <button class="details-btn">More Details</button>
-        </a>
-    </div>
+<p><b>Location:</b> {{ job.location }}</p>
+
+</div>
+
+<div class="contact-box">
+
+{% if user.is_authenticated %}
+
+<a href="{% url 'job_details' job.id %}">
+    <button class="details-btn">More Details</button>
+</a>
+
+{% else %}
+
+<a href="{% url 'login' %}">
+    <button class="details-btn">More Details</button>
+</a>
+
+{% endif %}
+
+</div>
 
 </div>
 
 {% empty %}
+
 <p class="no-job">No jobs available</p>
+
 {% endfor %}
+
 </section>
-
-{% else %}
-
-{% endif %}
-
 
 
 <script>
