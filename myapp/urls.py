@@ -38,5 +38,14 @@ urlpatterns = [
 path("job/<int:id>/", views.job_details, name="job_details"),
 path("complete-profile/", views.complete_profile, name="complete_profile"),
 path("profile/edit/", views.edit_profile, name="edit_profile"),
+    path("privacy-policy/", views.privacy_policy, name="privacy_policy"),
+
+    # path("about/", views.about, name="about"),
+    #
+    path("terms/", views.terms, name="terms"),
+    #
+    path("disclaimer/", views.disclaimer, name="disclaimer"),
+    #
+    # path("report-job/", views.report_job, name="report_job"),
 
 ]

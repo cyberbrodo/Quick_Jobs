@@ -678,3 +678,27 @@ def edit_profile(request):
             "edit": True,
         },
     )
+
+
+
+from django.shortcuts import render
+
+
+# def about(request):
+#     return render(request, "about.html")
+#
+#
+def terms(request):
+    return render(request, "terms.html")
+#
+#
+def disclaimer(request):
+    return render(request, "disclaimer.html")
+#
+#
+# def report_job(request):
+#     return render(request, "report_job.html")
+
+
+def privacy_policy(request):
+    return render(request, "privacy-policy.html")
