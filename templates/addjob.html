@@ -41,6 +41,8 @@
     type="text"
     name="shop_name"
     placeholder="Company / Shop Name"
+    minlength="4"
+    maxlength="15"
     value="{% if job %}{{ job.shop_name }}{% else %}{{ form_data.shop_name }}{% endif %}"
     required
 >
@@ -49,6 +51,8 @@
     type="text"
     name="title"
     placeholder="Job Title"
+    minlength="4"
+    maxlength="30"
     value="{% if job %}{{ job.title }}{% else %}{{ form_data.title }}{% endif %}"
     required
 >
@@ -65,10 +69,6 @@
 <select name="experience" required>
     <option value="">Select Experience</option>
 
-    <option value="Fresher"
-        {% if job and job.experience == "Fresher" or form_data.experience == "Fresher" %}selected{% endif %}>
-        Fresher
-    </option>
 
     <option value="No experience"
         {% if job and job.experience == "No experience" or form_data.experience == "No experience" %}selected{% endif %}>
@@ -114,21 +114,31 @@
         Shift Based
     </option>
 
-    <option value="Day Shift"
-        {% if job and job.work_time == "Day Shift" or form_data.work_time == "Day Shift" %}selected{% endif %}>
-        Day Shift
-    </option>
 
-    <option value="Night Shift"
-        {% if job and job.work_time == "Night Shift" or form_data.work_time == "Night Shift" %}selected{% endif %}>
-        Night Shift
-    </option>
+</select>
+
+    <select name="gender">
+    <option value="">Gender (Optional)</option>
+    <option value="Any">Any</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+</select>
+
+    <select name="education">
+    <option value="">Education (Optional)</option>
+
+    <option value="No Qualification">No Qualification</option>
+    <option value="SSLC">SSLC</option>
+    <option value="Plus Two">Plus Two</option>
+    <option value="Diploma">Diploma</option>
+    <option value="Degree">Degree</option>
 </select>
 
 <input
     type="text"
     name="age_limit"
-    placeholder="Age Limit"
+    placeholder="Age Limit (Example: 18-30)"
+    pattern="[0-9]{1,2}-[0-9]{1,2}"
     value="{% if job %}{{ job.age_limit }}{% else %}{{ form_data.age_limit }}{% endif %}"
 >
 
@@ -144,6 +154,7 @@
     type="text"
     name="salary"
     placeholder="Salary"
+    min="0"
     value="{% if job %}{{ job.salary }}{% else %}{{ form_data.salary }}{% endif %}"
     required
 >
@@ -153,7 +164,7 @@
 <input
     type="text"
     value="{% if job %}{{ job.owner_name }}{% else %}{{ owner_name }}{% endif %}"
-    readonly
+   required
 >
 
 <input
@@ -162,8 +173,8 @@
     placeholder="Phone Number"
     maxlength="10"
     inputmode="numeric"
+    
     value="{% if job %}{{ job.phone }}{% else %}{{ owner_phone }}{% endif %}"
-    readonly
     required
 >
 
@@ -171,7 +182,13 @@
 
 <textarea
     name="description"
-    placeholder="Job Description"
+    placeholder="Job Description
+    Example:
+• Customer handling
+• Billing
+• Immediate joining"
+    minlength="20"
+    maxlength="1000"
 >{% if job %}{{ job.description }}{% else %}{{ form_data.description }}{% endif %}</textarea>
 
 <button type="submit" id="addBtn">

@@ -106,3 +106,17 @@ padding:13px;
 }
 
 }
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:600;
+    color:#444;
+}
+
+.job-form input[readonly]{
+    background:#f1f5f9;
+    color:#666;
+    cursor:not-allowed;
+}

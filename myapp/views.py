@@ -633,3 +633,48 @@ def job_details(request, id):
 def logout_user(request):
     logout(request)
     return redirect("home")
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+@login_required(login_url="login")
+def edit_profile(request):
+
+    profile = request.user.profile
+
+    if request.method == "POST":
+
+        profile.full_name = request.POST.get(
+            "full_name", ""
+        ).strip()
+
+        profile.phone = request.POST.get(
+            "phone", ""
+        ).strip()
+
+        profile.district = request.POST.get(
+            "district", ""
+        ).strip()
+
+        profile.save()
+
+        messages.success(
+            request,
+            "Profile updated successfully."
+        )
+
+        return redirect("profile")
+
+    jobs = Job.objects.filter(
+        owner=request.user
+    ).order_by("-id")
+
+    return render(
+        request,
+        "profile.html",
+        {
+            "jobs": jobs,
+            "edit": True,
+        },
+    )

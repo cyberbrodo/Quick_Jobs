@@ -2,51 +2,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ job.title }} | QuickJobs</title>
-<link rel="stylesheet" href="{% static 'css/job_details.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ job.title }} | QuickJobs</title>
+    <link rel="stylesheet" href="{% static 'css/job_details.css' %}">
 </head>
 
 <body>
 
 <section class="details-page">
 
-<div class="details-header">
-<a href="{% url 'home' %}" class="back-btn">← Back</a>
-</div>
+    <div class="details-card">
 
-<div class="job-card details-card">
+        <div class="details-header">
+            <a href="{% url 'home' %}" class="back-btn">← Back</a>
+        </div>
 
-<div class="job-main">
-<h3>{{ job.shop_name }}</h3>
+        <div class="job-main">
 
-<p><b>Job:</b> {{ job.title }}</p>
-<p><b>Experience:</b> {{ job.experience|default:"Fresher" }}</p>
-<p><b>Work Time:</b> {{ job.work_time }}</p>
-<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
-<p><b>Location:</b> {{ job.location }}</p>
-<p><b>Salary:</b> {{ job.salary }}</p>
+          <h1>{{ job.title }}</h1>
+            <h2>{{ job.shop_name }}</h2>
+
+            <div class="job-info">
+
+                <p><strong>Location:</strong> {{ job.location }}</p>
+    <p><strong>Work Type:</strong> {{ job.work_time }}</p>
+    
+    <p><strong>Salary:</strong> ₹{{ job.salary }}</p>
+
+                </div>
+
+            <hr>
+
+            <h3>Job Description</h3>
+
+            <div class="description">
+                {{ job.description|linebreaks }}
+            </div>
+
+
+        </div>
+               <hr>
 
 <hr>
 
-<p><b>Description:</b></p>
-<div class="description">
-{{ job.description|linebreaks }}
-</div>
-</div>
+<h3>Requirements</h3>
 
-<div class="contact-box">
-<span class="contact-label">Apply / Contact</span>
+<ul class="requirements">
 
-<a href="https://wa.me/91{{ job.phone }}?text=Hi, I saw your {{ job.title }} job vacancy on QuickJobs. I am interested." target="_blank">
-<button class="contact-btn">Apply on WhatsApp</button>
-</a>
+    <li>
+        <strong>Age:</strong>
+        {{ job.age_limit|default:"18-30" }}
+    </li>
 
-<small class="note">Send your resume / details through WhatsApp</small>
-</div>
+    <li>
+        <strong>Gender:</strong>
+        {{ job.gender|default:"Any" }}
+    </li>
 
-</div>
+    <li>
+        <strong>Education:</strong>
+        {{ job.education|default:"Any" }}
+    </li>
+
+    <li>
+        <strong>Experience:</strong>
+        {{ job.experience|default:"Fresher" }}
+    </li>
+
+
+
+</ul>
+
+    <hr>
+
+             <h3>About Company</h3>
+
+    <p><strong>{{ job.shop_name }}</strong></p>
+
+    <p>{{ job.location }}, Kerala</p>
+
+    <hr>
+
+        <div class="contact-box">
+
+            <span class="contact-label">Apply / Contact</span>
+
+            <a href="https://wa.me/91{{ job.phone }}?text=Hi, I saw your {{ job.title }} job vacancy on QuickJobs. I am interested."
+               target="_blank">
+
+                <button class="contact-btn">
+                    Apply on WhatsApp
+                </button>
+
+            </a>
+
+            <small class="note">
+                Send your resume through WhatsApp
+            </small>
+
+        </div>
+
+    </div>
 
 </section>
 

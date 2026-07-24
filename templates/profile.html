@@ -12,77 +12,160 @@
 
 <div class="profile-box">
 
-<h2>My Profile</h2>
 
-<label>Name</label>
-<input
-    type="text"
-    value="{{ request.user.profile.full_name|default:request.user.first_name }}"
-    readonly
->
 
-<label>Phone Number</label>
-<input
-    type="text"
-    value="{{ request.user.profile.phone }}"
-    readonly
->
+<div class="profile-header">
+    <h2>
+        {% if edit %}
+            Edit Profile
+        {% else %}
+            My Profile
+        {% endif %}
+    </h2>
+</div>
 
-<label>Place</label>
-<input
-    type="text"
-    value="{{ request.user.profile.district|default:'Not added' }}"
-    readonly
->
-<a href="{% url 'logout_user' %}">
-<button class="logout-btn">Logout</button>
-</a>
+{% if edit %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="profile-info">
+
+        <div class="info-row">
+            <span>Name</span>
+            <input type="text"
+                   name="full_name"
+                   value="{{ request.user.profile.full_name|default:request.user.first_name }}"
+                   required>
+        </div>
+
+        <div class="info-row">
+            <span>Phone</span>
+            <input type="text"
+                   name="phone"
+                   value="{{ request.user.profile.phone }}"
+                   required>
+        </div>
+
+        <div class="info-row">
+            <span>Place</span>
+            <input type="text"
+                   name="district"
+                   value="{{ request.user.profile.district }}">
+        </div>
+
+    </div>
+
+    <div class="profile-actions">
+
+        <button type="submit" class="edit-btn">
+            Update Profile
+        </button>
+
+        <a href="{% url 'profile' %}">
+            <button type="button" class="logout-btn">
+                Cancel
+            </button>
+        </a>
+
+    </div>
+
+</form>
+
+{% else %}
+
+<div class="profile-info">
+
+    <div class="info-row">
+        <span>Name</span>
+        <strong>{{ request.user.profile.full_name|default:request.user.first_name }}</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Phone</span>
+        <strong>{{ request.user.profile.phone }}</strong>
+    </div>
+
+    <div class="info-row">
+        <span>Place</span>
+        <strong>{{ request.user.profile.district|default:"Not Added" }}</strong>
+    </div>
+
+</div>
+
+<div class="profile-actions">
+
+    <a href="{% url 'edit_profile' %}">
+        <button class="edit-btn">
+            Edit Profile
+        </button>
+    </a>
+
+    <a href="{% url 'logout_user' %}">
+        <button class="logout-btn">
+            Logout
+        </button>
+    </a>
+
+</div>
+
+{% endif %}
 
 <hr>
 
-<h2>My Added Jobs</h2>
+<div class="job-header">
+    <h2>My Added Jobs ({{ jobs|length }})</h2>
+
+    <a href="{% url 'add_job' %}" class="add-job-btn">
+        + Add New Job
+    </a>
+</div>
 
 {% for job in jobs %}
 
-<div class="job">
+<div class="job-card">
 
-<div class="top">
-{% if job.logo %}
-<img src="{{ job.logo.url }}" class="logo">
-{% endif %}
-<b>{{ job.title }}</b>
-</div>
+    <h3>{{ job.title }}</h3>
 
-<p><b>Shop:</b> {{ job.shop_name }}</p>
-<p><b>Category:</b> {{ job.category }}</p>
-<p><b>Experience:</b> {{ job.experience }}</p>
-<p><b>Work Time:</b> {{ job.work_time }}</p>
-<p><b>Age:</b> {{ job.age_limit|default:"Not specified" }}</p>
-<p><b>Location:</b> {{ job.location }}</p>
-<p><b>Salary:</b> ₹{{ job.salary }}</p>
-<p><b>Phone:</b> {{ job.phone }}</p>
+    <h4>{{ job.shop_name }}</h4>
 
-<div class="job-actions">
-<a href="{% url 'edit_job' job.id %}">
-<button>Edit</button>
-</a>
+    <div class="job-meta">
 
-<a href="{% url 'delete_job' job.id %}" onclick="return confirm('Delete this job?')">
-<button class="delete-btn">Delete</button>
-</a>
-</div>
+        <span> {{ job.location }}</span>
+
+        <span> ₹{{ job.salary }} / Month</span>
+
+        <span> {{ job.work_time }}</span>
+
+        <span> {{ job.experience }}</span>
+
+    </div>
+
+    <div class="job-actions">
+
+        <a href="{% url 'edit_job' job.id %}">
+            <button class="edit-job">Edit</button>
+        </a>
+
+        <a href="{% url 'delete_job' job.id %}"
+           onclick="return confirm('Delete this job?')">
+
+            <button class="delete-job">
+                Delete
+            </button>
+
+        </a>
+
+    </div>
 
 </div>
 
 {% empty %}
 
-<p style="text-align:center">No jobs added yet</p>
+<p class="empty">
+No jobs added yet.
+</p>
 
 {% endfor %}
-
-    <a href="{% url 'home' %}">← Back to Home</a>
-
-</div>
-
 </body>
 </html>
