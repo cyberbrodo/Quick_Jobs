@@ -225,3 +225,7 @@ class ActivityLog(models.Model):
     def __str__(self):
         username = self.user.username if self.user else "Deleted User"
         return f"{username} - {self.get_action_display()}"
+
+    gender = models.CharField(max_length=20, blank=True)
+
+    dob = models.DateField(null=True, blank=True)

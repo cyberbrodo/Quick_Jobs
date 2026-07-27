@@ -167,51 +167,59 @@ def complete_profile(request):
         profile.save(update_fields=["phone"])
 
     if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        district = request.POST.get("district", "").strip()
+     name = request.POST.get("name", "").strip()
+     district = request.POST.get("district", "").strip()
+     gender = request.POST.get("gender", "").strip()
+     dob = request.POST.get("dob", "").strip()
 
-        if not name:
-            messages.error(
-                request,
-                "Please enter your name",
-            )
-            return render(
-                request,
-                "complete_profile.html",
-                {
-                    "profile": profile,
-                },
-            )
-
-        # Django User-il name save
-        request.user.first_name = name
-        request.user.save(update_fields=["first_name"])
-
-        # Profile-il same name save
-        profile.full_name = name
-        profile.district = district
-        profile.profile_completed = True
-        profile.save(
-            update_fields=[
-                "full_name",
-                "district",
-                "profile_completed",
-                "updated_at",
-            ]
-        )
-
-        create_activity(
+    if not name:
+        messages.error(
             request,
-            "PROFILE_UPDATED",
-            f"Profile completed by {name}",
+            "Please enter your name",
         )
-
-        messages.success(
+        return render(
             request,
-            "Profile completed successfully",
+            "complete_profile.html",
+            {
+                "profile": profile,
+            },
         )
 
-        return redirect("home")
+    # Django User-il name save
+    request.user.first_name = name
+    request.user.save(update_fields=["first_name"])
+
+    # Profile-il save
+    profile.full_name = name
+    profile.district = district
+    profile.profile_completed = True
+    profile.save(
+        update_fields=[
+            "full_name",
+            "district",
+            "profile_completed",
+            "updated_at",
+        ]
+    )
+
+    # Activity Log
+    create_activity(
+        request,
+        ActivityLog.PROFILE_UPDATED,
+        f"""
+Name: {name}
+Place: {district}
+Gender: {gender}
+DOB: {dob}
+""".strip(),
+    )
+
+    messages.success(
+        request,
+        "Profile completed successfully",
+    )
+
+    return redirect("home")
 
     # Existing User name Profile-il display cheyyan
     if not profile.full_name and request.user.first_name:
@@ -414,10 +422,7 @@ def add_job(request):
             f"Added job #{job.id}: {job.title}",
         )
 
-        messages.success(
-            request,
-            "Job added successfully",
-        )
+
 
         return redirect("home")
 
@@ -502,7 +507,7 @@ def edit_job(request, id):
 
         job.save()
 
-        messages.success(request, "Job updated successfully")
+
         return redirect("profile")
 
     return render(
@@ -528,10 +533,7 @@ def delete_job(request, job_id):
 
     job.delete()
 
-    messages.success(
-        request,
-        "Job deleted successfully.",
-    )
+
 
     return redirect("profile")
 
@@ -552,12 +554,6 @@ def save_job(request, id):
         user=request.user,
         job=job,
     )
-
-    if created:
-        messages.success(request, "Job saved")
-    else:
-        saved_job.delete()
-        messages.info(request, "Job removed from saved jobs")
 
     next_url = request.GET.get("next")
 
@@ -597,7 +593,7 @@ def remove_saved_job(request, id):
     )
 
     saved_job.delete()
-    messages.info(request, "Job removed from saved jobs")
+
 
     return redirect("saved_jobs")
 
@@ -658,11 +654,6 @@ def edit_profile(request):
         ).strip()
 
         profile.save()
-
-        messages.success(
-            request,
-            "Profile updated successfully."
-        )
 
         return redirect("profile")
 

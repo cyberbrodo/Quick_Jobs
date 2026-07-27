@@ -119,3 +119,15 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "ip_address",
         "created_at",
     )
+
+    ordering = ("-created_at",)
+
+    list_per_page = 30
+
+    date_hierarchy = "created_at"
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

@@ -44,6 +44,41 @@
     name="district"
     placeholder="Enter your place"
     value="{{ profile.district }}"
+    required
+>
+<div class="gender">
+<label>Gender</label><br>
+
+<select name="gender" required>
+    <option value="" disabled {% if not profile.gender %}selected{% endif %}>
+        Select Gender
+    </option>
+
+    <option value="Male"
+        {% if profile.gender == "Male" %}selected{% endif %}>
+        Male
+    </option>
+
+    <option value="Female"
+        {% if profile.gender == "Female" %}selected{% endif %}>
+        Female
+    </option>
+
+    <option value="Other"
+        {% if profile.gender == "Other" %}selected{% endif %}>
+        Other
+    </option>
+</select> <br><br>
+
+    </div>
+
+<label>Date of Birth</label>
+
+<input
+    type="date"
+    name="dob"
+    value="{{ profile.dob|date:'Y-m-d' }}"
+    required
 >
 
 <button type="submit">

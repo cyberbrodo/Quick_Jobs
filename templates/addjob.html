@@ -96,6 +96,7 @@
     </option>
 </select>
 
+
 <select name="work_time" required>
     <option value="">Select Work Time</option>
 
@@ -117,15 +118,15 @@
 
 </select>
 
-    <select name="gender">
-    <option value="">Gender (Optional)</option>
+    <select name="gender" required>
+    <option value="">Select Gender</option>
     <option value="Any">Any</option>
     <option value="Male">Male</option>
     <option value="Female">Female</option>
 </select>
 
-    <select name="education">
-    <option value="">Education (Optional)</option>
+    <select name="education" required>
+    <option value="">Select Education </option>
 
     <option value="No Qualification">No Qualification</option>
     <option value="SSLC">SSLC</option>
@@ -137,15 +138,18 @@
 <input
     type="text"
     name="age_limit"
-    placeholder="Age Limit (Example: 18-30)"
-    pattern="[0-9]{1,2}-[0-9]{1,2}"
-    value="{% if job %}{{ job.age_limit }}{% else %}{{ form_data.age_limit }}{% endif %}"
+    placeholder="Age Limit"
+    minlength="2"
+    maxlength="2"
+    value="{% if job %}{{ job.age_limit }}{% else %}{{ form_data.age_limit }}{% endif %}" required
 >
 
 <input
     type="text"
     name="location"
     placeholder="Location"
+    minlength="5"
+    maxlength="20"
     value="{% if job %}{{ job.location }}{% else %}{{ form_data.location }}{% endif %}"
     required
 >
@@ -154,7 +158,8 @@
     type="text"
     name="salary"
     placeholder="Salary"
-    min="0"
+    minlength="2"
+    maxlength="6"
     value="{% if job %}{{ job.salary }}{% else %}{{ form_data.salary }}{% endif %}"
     required
 >
@@ -187,8 +192,6 @@
 • Customer handling
 • Billing
 • Immediate joining"
-    minlength="20"
-    maxlength="1000"
 >{% if job %}{{ job.description }}{% else %}{{ form_data.description }}{% endif %}</textarea>
 
 <button type="submit" id="addBtn">
