@@ -88,14 +88,13 @@
 
             <span class="contact-label">Apply / Contact</span>
 
-            <a href="https://wa.me/91{{ job.phone }}?text=Hi, I saw your {{ job.title }} job vacancy on QuickJobs. I am interested."
-               target="_blank">
-
-                <button class="contact-btn">
-                    Apply on WhatsApp
-                </button>
-
-            </a>
+            <a
+    class="contact-btn"
+    href="https://wa.me/91{{ job.phone|cut:'+91' }}?text={{ 'Hi, I saw your job vacancy on QuickJobs. I am interested.'|urlencode }}"
+    target="_blank"
+>
+    Apply on WhatsApp
+</a>
 
             <small class="note">
                 Send your resume through WhatsApp
