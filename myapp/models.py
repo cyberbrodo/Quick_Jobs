@@ -44,6 +44,15 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True,
     )
+    gender = models.CharField(
+        max_length=20,
+        blank=True,
+    )
+
+    dob = models.DateField(
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -226,6 +235,3 @@ class ActivityLog(models.Model):
         username = self.user.username if self.user else "Deleted User"
         return f"{username} - {self.get_action_display()}"
 
-    gender = models.CharField(max_length=20, blank=True)
-
-    dob = models.DateField(null=True, blank=True)

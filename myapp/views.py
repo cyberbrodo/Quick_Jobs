@@ -157,9 +157,7 @@ def complete_profile(request):
 
     profile, _ = Profile.objects.get_or_create(
         user=request.user,
-        defaults={
-            "phone": phone,
-        },
+        defaults={"phone": phone},
     )
 
     if not profile.phone:
@@ -167,70 +165,60 @@ def complete_profile(request):
         profile.save(update_fields=["phone"])
 
     if request.method == "POST":
-     name = request.POST.get("name", "").strip()
-     district = request.POST.get("district", "").strip()
-     gender = request.POST.get("gender", "").strip()
-     dob = request.POST.get("dob", "").strip()
+        name = request.POST.get("name", "").strip()
+        district = request.POST.get("district", "").strip()
+        gender = request.POST.get("gender", "").strip()
+        dob = request.POST.get("dob", "").strip()
 
-    if not name:
-        messages.error(
-            request,
-            "Please enter your name",
+        if not name:
+            messages.error(request, "Please enter your name")
+            return render(
+                request,
+                "complete_profile.html",
+                {"profile": profile},
+            )
+
+        request.user.first_name = name
+        request.user.save(update_fields=["first_name"])
+
+        profile.full_name = name
+        profile.district = district
+        profile.gender = gender
+        profile.dob = dob
+        profile.profile_completed = True
+
+        profile.save(
+            update_fields=[
+                "full_name",
+                "district",
+                "gender",
+                "dob",
+                "profile_completed",
+                "updated_at",
+            ]
         )
-        return render(
+
+        create_activity(
             request,
-            "complete_profile.html",
-            {
-                "profile": profile,
-            },
-        )
-
-    # Django User-il name save
-    request.user.first_name = name
-    request.user.save(update_fields=["first_name"])
-
-    # Profile-il save
-    profile.full_name = name
-    profile.district = district
-    profile.profile_completed = True
-    profile.save(
-        update_fields=[
-            "full_name",
-            "district",
-            "profile_completed",
-            "updated_at",
-        ]
-    )
-
-    # Activity Log
-    create_activity(
-        request,
-        ActivityLog.PROFILE_UPDATED,
-        f"""
-Name: {name}
-Place: {district}
-Gender: {gender}
-DOB: {dob}
+            ActivityLog.PROFILE_UPDATED,
+            f"""
+Name: {profile.full_name}
+Place: {profile.district}
+Gender: {profile.gender}
+DOB: {profile.dob}
 """.strip(),
-    )
+        )
 
-    messages.success(
-        request,
-        "Profile completed successfully",
-    )
+        messages.success(request, "Profile completed successfully")
+        return redirect("home")
 
-    return redirect("home")
-
-    # Existing User name Profile-il display cheyyan
     if not profile.full_name and request.user.first_name:
         profile.full_name = request.user.first_name
 
     return render(
         request,
         "complete_profile.html",
-        {
-            "profile": profile,
-        },
+        {"profile": profile},
     )
 # =========================================================
 # HOME + SEARCH + FILTER
