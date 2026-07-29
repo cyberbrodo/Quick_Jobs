@@ -145,6 +145,11 @@ class Job(models.Model):
         max_length=150,
         blank=True
     )
+    shop_photo = models.ImageField(
+        upload_to="shop_photos/",
+        null=True,
+        blank=True
+    )
 
 
 

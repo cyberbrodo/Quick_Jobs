@@ -194,6 +194,15 @@
 • Immediate joining"
 >{% if job %}{{ job.description }}{% else %}{{ form_data.description }}{% endif %}</textarea>
 
+    <div class="mb-3">
+    <label class="form-label">Shop Photo</label>
+    <input
+        type="file"
+        name="shop_photo"
+        class="form-control"
+        accept="image/*">
+</div>
+
 <button type="submit" id="addBtn">
     {% if job %}
         Update Job

@@ -82,6 +82,15 @@
 
     <p>{{ job.location }}, Kerala</p>
 
+        {% if job.shop_photo %}
+    <div class="shop-photo">
+        <img src="{{ job.shop_photo.url }}"
+             alt="Shop Photo"
+             width="400"
+             height="300">
+    </div>
+{% endif %}
+
     <hr>
 
         <div class="contact-box">

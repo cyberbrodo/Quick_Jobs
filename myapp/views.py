@@ -358,6 +358,8 @@ def add_job(request):
             "description", ""
         ).strip()
 
+        shop_photo = request.FILES.get("shop_photo")
+
         if not all([
             category_name,
             shop_name,
@@ -401,6 +403,7 @@ def add_job(request):
             owner_name=owner_name,
             phone=phone,
             description=description,
+            shop_photo=shop_photo,
             is_verified=True,
         )
 

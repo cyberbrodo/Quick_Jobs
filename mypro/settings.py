@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=%i+nitrzph%&4v=*a5cx0o%#n-+jrich7ducf)tqz29m%hp2('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "quick-jobs.onrender.com",
@@ -157,6 +157,7 @@ CSRF_COOKIE_SAMESITE= "Lax"
 SESSION_COOKIE_SAMESITE= "Lax"
 
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
