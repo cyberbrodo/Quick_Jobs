@@ -66,35 +66,25 @@
     required
 >
 
-<select name="experience" required>
+<select name="experience" id="experience" required>
     <option value="">Select Experience</option>
 
+    <option value="No experience">No experience</option>
+    <option value="0-1 Year">0-1 Year</option>
+    <option value="1-2 Years">1-2 Years</option>
+    <option value="2-3 Years">2-3 Years</option>
+    <option value="3+ Years">3+ Years</option>
 
-    <option value="No experience"
-        {% if job and job.experience == "No experience" or form_data.experience == "No experience" %}selected{% endif %}>
-        No experience
-    </option>
-
-    <option value="0-1 Year"
-        {% if job and job.experience == "0-1 Year" or form_data.experience == "0-1 Year" %}selected{% endif %}>
-        0-1 Year
-    </option>
-
-    <option value="1-2 Years"
-        {% if job and job.experience == "1-2 Years" or form_data.experience == "1-2 Years" %}selected{% endif %}>
-        1-2 Years
-    </option>
-
-    <option value="2-3 Years"
-        {% if job and job.experience == "2-3 Years" or form_data.experience == "2-3 Years" %}selected{% endif %}>
-        2-3 Years
-    </option>
-
-    <option value="3+ Years"
-        {% if job and job.experience == "3+ Years" or form_data.experience == "3+ Years" %}selected{% endif %}>
-        3+ Years
-    </option>
+    <option value="Other">Other</option>
 </select>
+
+<input
+    type="text"
+    id="customExperience"
+    name="custom_experience"
+    placeholder="Enter Experience"
+    style="display:none;"
+>
 
 
 <select name="work_time" required>
@@ -125,15 +115,26 @@
     <option value="Female">Female</option>
 </select>
 
-    <select name="education" required>
-    <option value="">Select Education </option>
+<select name="education" id="education" required onchange="toggleEducation()">
+    <option value="">Select Education</option>
 
     <option value="No Qualification">No Qualification</option>
     <option value="SSLC">SSLC</option>
     <option value="Plus Two">Plus Two</option>
-    <option value="Diploma">Diploma</option>
+<!--    <option value="Diploma">Diploma</option>-->
     <option value="Degree">Degree</option>
+    <option value="Other">Other</option>
+
+<input
+    type="text"
+    id="customEducation"
+    name="custom_education"
+    placeholder="Enter your education (e.g. B.Tech, ITI, Nursing)"
+    style="display:none; margin-top:10px;">
 </select>
+
+
+
 
 <input
     type="text"
@@ -159,7 +160,7 @@
     name="salary"
     placeholder="Salary"
     minlength="2"
-    maxlength="6"
+   
     value="{% if job %}{{ job.salary }}{% else %}{{ form_data.salary }}{% endif %}"
     required
 >
@@ -216,6 +217,36 @@
 <a href="{% url 'home' %}">← Back to Home</a>
 
 </div>
+
+<script>
+function toggleEducation() {
+    const education = document.getElementById("education");
+    const custom = document.getElementById("customEducation");
+
+    if (education.value === "Other") {
+        custom.style.display = "block";
+        custom.required = true;
+    } else {
+        custom.style.display = "none";
+        custom.required = false;
+        custom.value = "";
+    }
+}
+
+const experience = document.getElementById("experience");
+const customExperience = document.getElementById("customExperience");
+
+experience.addEventListener("change", function () {
+    if (this.value === "Other") {
+        customExperience.style.display = "block";
+        customExperience.required = true;
+    } else {
+        customExperience.style.display = "none";
+        customExperience.required = false;
+        customExperience.value = "";
+    }
+});
+</script>
 
 </body>
 </html>

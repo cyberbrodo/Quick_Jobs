@@ -112,9 +112,9 @@ class Job(models.Model):
         max_length=100,
     )
 
-    gender = models.CharField(max_length=20, default="Any")
+    gender = models.CharField(max_length=20, blank=True)
 
-    education = models.CharField(max_length=50, default="Any")
+    education = models.CharField(max_length=100, blank=True)
 
     age_limit = models.CharField(
         max_length=50,

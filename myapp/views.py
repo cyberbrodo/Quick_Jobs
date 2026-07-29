@@ -390,12 +390,27 @@ def add_job(request):
             },
         )
 
+        gender = request.POST.get("gender")
+        education = request.POST.get("education")
+        custom_education = request.POST.get("custom_education")
+
+        if education == "Other":
+            education = custom_education
+
+            experience = request.POST.get("experience")
+            custom_experience = request.POST.get("custom_experience")
+
+            if experience == "Other":
+                experience = custom_experience
+
         job = Job.objects.create(
             owner=request.user,
             shop_name=shop_name,
             title=title,
             category=category,
             experience=experience,
+            gender=gender,
+            education=education,
             work_time=work_time,
             age_limit=age_limit,
             location=location,
@@ -470,6 +485,14 @@ def edit_job(request, id):
             "work_time", ""
         ).strip()
 
+        job.gender = request.POST.get(
+            "gender", ""
+        ).strip()
+
+        job.education = request.POST.get(
+            "education", ""
+        ).strip()
+
         job.age_limit = request.POST.get(
             "age_limit", ""
         ).strip()
@@ -495,6 +518,21 @@ def edit_job(request, id):
 
         # Edit cheythal home-il ninn disappear aakaruth.
         job.is_verified = True
+        job.gender = request.POST.get("gender")
+
+        education = request.POST.get("education")
+        if education == "Other":
+            education = request.POST.get("custom_education")
+
+        job.education = education
+
+        experience = request.POST.get("experience")
+        custom_experience = request.POST.get("custom_experience")
+
+        if experience == "Other":
+            experience = custom_experience
+
+        job.experience = experience
 
         job.save()
 
