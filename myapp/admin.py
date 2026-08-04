@@ -13,6 +13,7 @@ from .models import (
     SavedJob,
     ActivityLog,
 )
+from .models import PushSubscription
 
 
 @admin.register(Profile)
@@ -131,3 +132,23 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+    @admin.register(PushSubscription)
+    class PushSubscriptionAdmin(admin.ModelAdmin):
+        list_display = (
+            "user",
+            "created_at",
+        )
+
+        search_fields = (
+            "user__username",
+            "user__first_name",
+        )
+
+        readonly_fields = (
+            "user",
+            "endpoint",
+            "p256dh",
+            "auth",
+            "created_at",
+                )

@@ -9,6 +9,10 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from .models import PushSubscription
+import json
 
 from .models import (Category, Job, SavedJob,Profile,ActivityLog,)
 
@@ -722,3 +726,64 @@ def disclaimer(request):
 
 def privacy_policy(request):
     return render(request, "privacy-policy.html")
+
+@require_POST
+@login_required(login_url="login")
+def save_push_subscription(request):
+
+    try:
+        data = json.loads(request.body)
+
+        subscription, created = PushSubscription.objects.update_or_create(
+            endpoint=data["endpoint"],
+            defaults={
+                "user": request.user,
+                "p256dh": data["keys"]["p256dh"],
+                "auth": data["keys"]["auth"],
+            },
+        )
+
+        return JsonResponse({
+            "success": True
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        }, status=400)
+
+
+from pywebpush import webpush
+from django.conf import settings
+from .models import PushSubscription
+
+def send_notification(user, title, body, url="/"):
+
+    subscriptions = PushSubscription.objects.filter(user=user)
+
+    payload = {
+        "title": title,
+        "body": body,
+        "url": url,
+    }
+
+    for sub in subscriptions:
+
+        try:
+
+            webpush(
+                subscription_info={
+                    "endpoint": sub.endpoint,
+                    "keys": {
+                        "p256dh": sub.p256dh,
+                        "auth": sub.auth,
+                    },
+                },
+                data=json.dumps(payload),
+                vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                vapid_claims=settings.VAPID_CLAIMS,
+            )
+
+        except Exception:
+            sub.delete()

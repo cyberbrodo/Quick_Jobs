@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -47,7 +48,8 @@ path("profile/edit/", views.edit_profile, name="edit_profile"),
     path("disclaimer/", views.disclaimer, name="disclaimer"),
     #
     # path("report-job/", views.report_job, name="report_job"),
-
-
+     path("save-subscription/",views.save_push_subscription,name="save_subscription",),
+path("sw.js",TemplateView.as_view(template_name="sw.js",content_type="application/javascript"),
+),
 
 ]
