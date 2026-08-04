@@ -806,7 +806,7 @@ def service_worker(request):
     return FileResponse(
         open(
             os.path.join(settings.BASE_DIR, "static", "sw.js"),
-            "rb"
+            "rb",
         ),
         content_type="application/javascript",
     )
