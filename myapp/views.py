@@ -432,6 +432,16 @@ def add_job(request):
             f"Added job #{job.id}: {job.title}",
         )
 
+        users = User.objects.exclude(id=request.user.id)
+
+        for user in users:
+            send_notification(
+                user=user,
+                title="New Job Posted",
+                body=f"{job.title} - {job.location}",
+                url=f"/job/{job.id}/",
+            )
+
 
 
         return redirect("home")
@@ -727,6 +737,7 @@ def disclaimer(request):
 def privacy_policy(request):
     return render(request, "privacy-policy.html")
 
+
 @require_POST
 @login_required(login_url="login")
 def save_push_subscription(request):
@@ -787,3 +798,15 @@ def send_notification(user, title, body, url="/"):
 
         except Exception:
             sub.delete()
+
+from django.http import FileResponse
+import os
+
+def service_worker(request):
+    return FileResponse(
+        open(
+            os.path.join(settings.BASE_DIR, "static", "sw.js"),
+            "rb"
+        ),
+        content_type="application/javascript",
+    )

@@ -50,6 +50,8 @@ path("profile/edit/", views.edit_profile, name="edit_profile"),
     # path("report-job/", views.report_job, name="report_job"),
      path("save-subscription/",views.save_push_subscription,name="save_subscription",),
 path("sw.js",TemplateView.as_view(template_name="sw.js",content_type="application/javascript"),
+
 ),
+path("sw.js", views.service_worker, name="service_worker"),
 
 ]
