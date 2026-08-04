@@ -1,4 +1,5 @@
-const publicKey = "YOUR_VAPID_PUBLIC_KEY";
+const publicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECb41v72F2CfQHzrmUlRl5/4oApV7\n" +
+    "0fuOxGWVqdtUG4kV61hivWuP57pC3AbL9qoLMX6+cj3/ZJwJ/M0SbaoIMQ==";
 
 async function registerPush() {
 
