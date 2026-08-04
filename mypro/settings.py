@@ -162,3 +162,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY")
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY")
+
+VAPID_CLAIMS = {
+    "sub": "mailto:support@quick-jobs.in"
+}
