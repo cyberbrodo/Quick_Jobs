@@ -1,4 +1,4 @@
-const publicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECb41v72F2CfQHzrmUlRl5/4oApV70fuOxGWVqdtUG4kV61hivWuP57pC3AbL9qoLMX6+cj3/ZJwJ/M0SbaoIMQ==";
+const publicKey = "BCawak-uAJejYRSp3ON--SefDWfaBVB8LhCY-aI9cC341qZg8zrb1_4J7S7Fi4vBajLkuLjUswcl8LhtAnJfVXo"
 
 async function registerPush() {
 
