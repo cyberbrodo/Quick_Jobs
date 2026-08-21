@@ -152,3 +152,32 @@ class ActivityLogAdmin(admin.ModelAdmin):
             "auth",
             "created_at",
                 )
+
+        from django.contrib import admin
+        from .models import CustomerReview
+
+        @admin.register(CustomerReview)
+        class CustomerReviewAdmin(admin.ModelAdmin):
+            list_display = (
+                "user",
+                "rating",
+                "review",
+                "is_approved",
+                "created_at",
+            )
+
+            list_filter = (
+                "rating",
+                "is_approved",
+                "created_at",
+            )
+
+            search_fields = (
+                "user__first_name",
+                "user__username",
+                "review",
+            )
+
+            list_editable = (
+                "is_approved",
+            )

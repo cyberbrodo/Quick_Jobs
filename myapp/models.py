@@ -164,6 +164,36 @@ class Job(models.Model):
     def __str__(self):
         return f"{self.shop_name} - {self.title}"
 
+class CustomerReview(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="customer_reviews"
+    )
+
+    rating = models.PositiveIntegerField(
+        choices=[
+            (1, "1 Star"),
+            (2, "2 Stars"),
+            (3, "3 Stars"),
+            (4, "4 Stars"),
+            (5, "5 Stars"),
+        ]
+    )
+
+    review = models.TextField()
+
+    is_approved = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.first_name} - {self.rating} Stars"
+
+
 
 class SavedJob(models.Model):
     user = models.ForeignKey(

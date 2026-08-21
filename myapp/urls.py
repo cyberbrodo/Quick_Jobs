@@ -53,5 +53,11 @@ path("profile/edit/", views.edit_profile, name="edit_profile"),
 
 
 path("sw.js", views.service_worker, name="service_worker"),
+path("all-jobs/", views.all_jobs, name="all_jobs"),
+path(
+    "add-review/",
+    views.add_review,
+    name="add_review"
+),
 
 ]

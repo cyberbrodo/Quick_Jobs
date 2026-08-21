@@ -113,12 +113,10 @@
 
 <hr>
 
-<div class="job-header">
-    <h2>My Added Jobs ({{ jobs|length }})</h2>
+<!--<div class="job-header">-->
+<!--    <h2>My Added Jobs ({{ jobs|length }})</h2>-->
 
-    <a href="{% url 'add_job' %}" class="add-job-btn">
-        + Add New Job
-    </a>
+    
 </div>
 
 {% for job in jobs %}
@@ -162,10 +160,9 @@
 
 {% empty %}
 
-<p class="empty">
-No jobs added yet.
-</p>
+
 
 {% endfor %}
+
 </body>
 </html>

@@ -625,3 +625,207 @@ body{
     color:#94a3b8;
     font-size:14px;
 }
+
+
+/* ========== VIEW ALL JOBS ========== */
+.all-jobs-button-section {
+    text-align: center;
+    margin: 30px 0 50px;
+}
+
+
+.all-jobs-btn {
+    display: inline-block;
+    padding: 13px 28px;
+    background: #1dd1a1;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+
+.all-jobs-btn:hover {
+    opacity: 0.9;
+}
+
+
+/* ============ CUSTOMER REVIEWS ========== */
+
+.review-form-section {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+.review-form-section h2 {
+    margin-bottom: 8px;
+}
+
+.review-form-section p {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.review-form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-form-section select,
+.review-form-section textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.review-form-section textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.review-form-section button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@keyframes reviewSlide {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    30% {
+        transform: translateX(0);
+    }
+
+    40% {
+        transform: translateX(-340px);
+    }
+
+    63% {
+        transform: translateX(-340px);
+    }
+
+    73% {
+        transform: translateX(-680px);
+    }
+
+    96% {
+        transform: translateX(-680px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+    .reviews-container { grid-template-columns: 1fr; }
+
+    .reviews-section { padding: 15px; } }
+
+
+.reviews-section {
+    max-width: 100%;
+    margin: 20px auto 60px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.reviews-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.reviews-header h2 {
+    margin-bottom: 8px;
+}
+
+.reviews-header p {
+    color: #777;
+}
+
+.reviews-slider {
+    width: 100%;
+    overflow: hidden;
+}
+
+.review-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: reviewSlide 15s linear infinite;
+}
+
+.review-card {
+    width: 320px;
+    flex-shrink: 0;
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+
+.stars {
+    color: #f59e0b;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.review-card p {
+    line-height: 1.7;
+    color: #444;
+}
+
+.review-card h4 {
+    margin-top: 15px;
+    color: #555;
+}
+
+@keyframes reviewSlide {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    30% {
+        transform: translateX(0);
+    }
+
+    40% {
+        transform: translateX(-340px);
+    }
+
+    63% {
+        transform: translateX(-340px);
+    }
+
+    73% {
+        transform: translateX(-680px);
+    }
+
+    96% {
+        transform: translateX(-680px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}

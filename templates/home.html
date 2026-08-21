@@ -84,10 +84,10 @@
     Saved Jobs
 </a>
 
-<a href="{% url 'add_job' %}">
-     <i class="fa-solid fa-plus"></i>
-    Add Jobs
-</a>
+<!--<a href="{% url 'add_job' %}">-->
+<!--     <i class="fa-solid fa-plus"></i>-->
+<!--    Add Jobs-->
+<!--</a>-->
 
 <a href="{% url 'logout_user' %}">
     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -178,6 +178,8 @@
 
 </div>
 
+
+
 <div class="contact-box">
 
 {% if user.is_authenticated %}
@@ -205,6 +207,115 @@
 {% endfor %}
 
 </section>
+
+
+{% if has_more_jobs %}
+    <section class="all-jobs-button-section">
+
+        <a href="{% url 'all_jobs' %}" class="all-jobs-btn"> View All Jobs </a>
+    </section>
+    {% endif %}
+
+
+
+  {% if reviews %}
+
+<section class="reviews-section">
+
+    <div class="reviews-header">
+
+        <h2>What Our Users Say</h2>
+
+        <p>
+            Real experiences from QuickJobs users.
+        </p>
+
+    </div>
+
+
+    <div class="reviews-slider">
+
+        <div class="review-track">
+
+            {% for review in reviews %}
+
+            <div class="review-card">
+
+                <div class="stars">
+
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+
+                <p>
+                    "{{ review.review }}"
+                </p>
+
+                <h4>
+                    — {{ review.user.profile.full_name|default:review.user.first_name }}
+                </h4>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+{% if user.is_authenticated %}
+
+<section class="review-form-section">
+
+    <h2>Share Your Experience</h2>
+
+    <p>Used QuickJobs? Tell us about your experience.</p>
+
+    <form method="POST" action="{% url 'add_review' %}">
+
+        {% csrf_token %}
+
+        <div class="rating-select">
+
+            <label>Rating</label>
+
+            <select name="rating" required>
+                <option value="">Select Rating</option>
+                <option value="5">★★★★★ - Excellent</option>
+                <option value="4">★★★★ - Good</option>
+                <option value="3">★★★ - Average</option>
+                <option value="2">★★ - Poor</option>
+                <option value="1">★ - Very Poor</option>
+            </select>
+
+        </div>
+
+        <textarea
+            name="review"
+            placeholder="Write your experience..."
+            maxlength="500"
+            required></textarea>
+
+        <button type="submit">
+            Submit Review
+        </button>
+
+    </form>
+
+</section>
+
+{% endif %}
 
 
 <footer class="footer">

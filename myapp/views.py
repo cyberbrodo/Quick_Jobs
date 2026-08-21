@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import PushSubscription
 import json
+from .models import CustomerReview
 
 from .models import (Category, Job, SavedJob,Profile,ActivityLog,)
 
@@ -228,12 +229,13 @@ DOB: {profile.dob}
 # HOME + SEARCH + FILTER
 # =========================================================
 
+
 def home(request):
     jobs = (
         Job.objects
         .filter(is_verified=True)
         .select_related("category", "owner")
-        .order_by("-id")
+        .order_by("title")
     )
 
     categories = Category.objects.all().order_by("name")
@@ -251,10 +253,75 @@ def home(request):
         )
 
     if place:
-        jobs = jobs.filter(location__icontains=place)
+        jobs = jobs.filter(
+            location__icontains=place
+        )
 
     if category_id.isdigit():
-        jobs = jobs.filter(category_id=int(category_id))
+        jobs = jobs.filter(
+            category_id=int(category_id)
+        )
+
+    saved_job_ids = set()
+
+    if request.user.is_authenticated:
+        saved_job_ids = set(
+            SavedJob.objects.filter(
+                user=request.user
+            ).values_list("job_id", flat=True)
+        )
+
+    # Home page-il maximum 6 jobs
+    home_jobs = jobs[:6]
+
+    reviews = CustomerReview.objects.filter(
+        is_approved=True
+    ).select_related("user")
+
+    return render(
+        request,
+        "home.html",
+        {
+            "reviews": reviews,
+            "jobs": home_jobs,
+            "categories": categories,
+            "saved_job_ids": saved_job_ids,
+            "has_more_jobs": jobs.count() > 6,
+        },
+    )
+
+
+def all_jobs(request):
+    jobs = (
+        Job.objects
+        .filter(is_verified=True)
+        .select_related("category", "owner")
+        .order_by("title")
+    )
+
+    categories = Category.objects.all().order_by("name")
+
+    q = request.GET.get("q", "").strip()
+    place = request.GET.get("place", "").strip()
+    category_id = request.GET.get("category", "").strip()
+
+    if q:
+        jobs = jobs.filter(
+            Q(title__icontains=q)
+            | Q(shop_name__icontains=q)
+            | Q(description__icontains=q)
+            | Q(category__name__icontains=q)
+        )
+
+    if place:
+        jobs = jobs.filter(
+            location__icontains=place
+        )
+
+    if category_id.isdigit():
+        jobs = jobs.filter(
+            category_id=int(category_id)
+        )
 
     saved_job_ids = set()
 
@@ -267,13 +334,14 @@ def home(request):
 
     return render(
         request,
-        "home.html",
+        "all_jobs.html",
         {
             "jobs": jobs,
             "categories": categories,
             "saved_job_ids": saved_job_ids,
         },
     )
+
 
 
 # =========================================================
@@ -338,9 +406,12 @@ def add_job(request):
             or "Fresher"
         )
 
-        work_time = request.POST.get(
-            "work_time", ""
-        ).strip()
+        work_time = request.POST.get("work_time", "").strip()
+
+        if work_time == "Other":
+            work_time = request.POST.get(
+                "custom_work_time", ""
+            ).strip()
 
         location = request.POST.get(
             "location", ""
@@ -810,3 +881,53 @@ def service_worker(request):
         ),
         content_type="application/javascript",
     )
+
+@login_required(login_url="login")
+def add_review(request):
+
+    if request.method == "POST":
+
+        rating = request.POST.get("rating")
+        review_text = request.POST.get("review", "").strip()
+
+        if not rating or not review_text:
+            messages.error(
+                request,
+                "Please provide rating and review."
+            )
+
+            return redirect("home")
+
+        try:
+            rating = int(rating)
+        except ValueError:
+            messages.error(
+                request,
+                "Invalid rating."
+            )
+
+            return redirect("home")
+
+        if rating < 1 or rating > 5:
+            messages.error(
+                request,
+                "Rating must be between 1 and 5."
+            )
+
+            return redirect("home")
+
+        CustomerReview.objects.create(
+            user=request.user,
+            rating=rating,
+            review=review_text,
+            is_approved=False,
+        )
+
+        messages.success(
+            request,
+            "Thank you! Your review will appear after approval."
+        )
+
+        return redirect("home")
+
+    return redirect("home")
