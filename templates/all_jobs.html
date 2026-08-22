@@ -1,0 +1,152 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Jobs | QuickJobs</title>
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        <a href="{% url 'home' %}">Quick<span>Jobs</span></a>
+    </div>
+
+    <div class="profile">
+        <button class="menu-btn" onclick="openMenu()">☰</button>
+    </div>
+
+    <form class="search-box" method="GET" id="searchForm">
+
+        <input
+        type="text"
+        class="search"
+        name="q"
+        placeholder="Search jobs..."
+        value="{{ request.GET.q }}">
+
+        <input
+        type="text"
+        class="search"
+        name="place"
+        placeholder="Enter place"
+        value="{{ request.GET.place }}">
+
+        <select name="category" class="search">
+            <option value="">All Categories</option>
+
+            {% for cat in categories %}
+            <option value="{{ cat.id }}"
+            {% if request.GET.category == cat.id|stringformat:"s" %}
+            selected
+            {% endif %}>
+                {{ cat.name }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+    </form>
+
+
+</header>
+
+
+
+
+<section class="all-jobs-page">
+
+    <div class="all-jobs-header">
+
+     
+
+        <p>
+            Browse all available verified job opportunities.
+        </p>
+
+    </div>
+
+
+    <section class="job-list">
+
+        {% for job in jobs %}
+
+        <div class="job-card">
+
+            <div class="job-main">
+
+                <h3>{{ job.shop_name }}</h3>
+
+                <p>
+                    <b>Job:</b> {{ job.title }}
+                </p>
+
+                <p class="exp">
+                    {{ job.experience|default:"Fresher" }}
+                </p>
+
+                <p>
+                    <b>Work Time:</b>
+                    {{ job.work_time|default:"Full Time" }}
+                </p>
+
+                <p>
+                    <b>Age Limit:</b>
+                    {{ job.age_limit|default:"Not specified" }}
+                </p>
+
+                <p>
+                    <b>Location:</b>
+                    {{ job.location }}
+                </p>
+
+            </div>
+
+
+            <div class="contact-box">
+
+                {% if user.is_authenticated %}
+
+                <a href="{% url 'job_details' job.id %}">
+                    <button class="details-btn">
+                        More Details
+                    </button>
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'login' %}">
+                    <button class="details-btn">
+                        More Details
+                    </button>
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="no-job">
+            <p>No jobs available right now.</p>
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+</section>
+
+
+</body>
+</html>

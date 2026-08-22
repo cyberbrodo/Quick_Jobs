@@ -57,11 +57,9 @@
     </form>
 
 
-
-
-
-
 </header>
+
+
 
 <!--slidert-->
 
@@ -224,8 +222,6 @@
 
     <div class="reviews-header">
 
-        <h2>What Our Users Say</h2>
-
         <p>
             Real experiences from QuickJobs users.
         </p>
@@ -258,7 +254,7 @@
                 </p>
 
                 <h4>
-                    — {{ review.user.profile.full_name|default:review.user.first_name }}
+                     {{ review.user.profile.full_name|default:review.user.first_name }}
                 </h4>
 
             </div>
@@ -280,26 +276,35 @@
 
     <h2>Share Your Experience</h2>
 
-    <p>Used QuickJobs? Tell us about your experience.</p>
-
     <form method="POST" action="{% url 'add_review' %}">
 
         {% csrf_token %}
 
+
         <div class="rating-select">
 
-            <label>Rating</label>
 
-            <select name="rating" required>
-                <option value="">Select Rating</option>
-                <option value="5">★★★★★ - Excellent</option>
-                <option value="4">★★★★ - Good</option>
-                <option value="3">★★★ - Average</option>
-                <option value="2">★★ - Poor</option>
-                <option value="1">★ - Very Poor</option>
-            </select>
 
-        </div>
+    <div class="star-rating">
+
+        <input type="radio" name="rating" id="star5" value="5" required>
+        <label for="star5">★</label>
+
+        <input type="radio" name="rating" id="star4" value="4">
+        <label for="star4">★</label>
+
+        <input type="radio" name="rating" id="star3" value="3">
+        <label for="star3">★</label>
+
+        <input type="radio" name="rating" id="star2" value="2">
+        <label for="star2">★</label>
+
+        <input type="radio" name="rating" id="star1" value="1">
+        <label for="star1">★</label>
+
+    </div>
+
+</div>
 
         <textarea
             name="review"
