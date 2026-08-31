@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .models import (
     Profile,
     Category,
+    Company,
     Job,
     SavedJob,
     ActivityLog,
@@ -46,6 +47,27 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
     )
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+            "is_active",
+            "created_at",
+        )
+
+    search_fields = (
+            "name",
+        )
+
+    list_filter = (
+            "is_active",
+            "created_at",
+        )
+
+    list_editable = (
+            "is_active",
+        )
 
 
 @admin.register(Job)

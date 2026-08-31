@@ -9,124 +9,159 @@
 
     <title>All Jobs | QuickJobs</title>
 
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all_jobs.css' %}">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<header class="navbar">
-
-    <div class="logo">
-        <a href="{% url 'home' %}">Quick<span>Jobs</span></a>
-    </div>
-
-    <div class="profile">
-        <button class="menu-btn" onclick="openMenu()">☰</button>
-    </div>
-
-    <form class="search-box" method="GET" id="searchForm">
-
-        <input
-        type="text"
-        class="search"
-        name="q"
-        placeholder="Search jobs..."
-        value="{{ request.GET.q }}">
-
-        <input
-        type="text"
-        class="search"
-        name="place"
-        placeholder="Enter place"
-        value="{{ request.GET.place }}">
-
-        <select name="category" class="search">
-            <option value="">All Categories</option>
-
-            {% for cat in categories %}
-            <option value="{{ cat.id }}"
-            {% if request.GET.category == cat.id|stringformat:"s" %}
-            selected
-            {% endif %}>
-                {{ cat.name }}
-            </option>
-            {% endfor %}
-
-        </select>
-
-    </form>
-
-
-</header>
 
 
 
+<!-- ================= ALL JOBS ================= -->
 
 <section class="all-jobs-page">
 
     <div class="all-jobs-header">
 
-     
+        <span class="small-title">
+            AVAILABLE JOBS
+        </span>
 
-        <p>
-            Browse all available verified job opportunities.
-        </p>
+        <h1>
+            Find your next opportunity
+        </h1>
 
     </div>
 
 
-    <section class="job-list">
+    <!-- ================= JOB GRID ================= -->
+
+    <section class="job-grid">
 
         {% for job in jobs %}
 
         <div class="job-card">
 
-            <div class="job-main">
+            <!-- TOP -->
 
-                <h3>{{ job.shop_name }}</h3>
+            <div class="job-top">
 
-                <p>
-                    <b>Job:</b> {{ job.title }}
-                </p>
+                <div class="company-info">
 
-                <p class="exp">
-                    {{ job.experience|default:"Fresher" }}
-                </p>
+                    <div class="company-avatar">
 
-                <p>
-                    <b>Work Time:</b>
-                    {{ job.work_time|default:"Full Time" }}
-                </p>
+                        {{ job.shop_name|first|upper }}
 
-                <p>
-                    <b>Age Limit:</b>
-                    {{ job.age_limit|default:"Not specified" }}
-                </p>
+                    </div>
 
-                <p>
-                    <b>Location:</b>
-                    {{ job.location }}
-                </p>
+                    <div class="company-text">
+
+                        <h3>
+                            {{ job.shop_name }}
+                        </h3>
+
+                        <p>
+                            {{ job.title }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOOKMARK -->
+
+                <button class="bookmark-btn">
+
+                    <i class="fa-regular fa-bookmark"></i>
+
+                </button>
 
             </div>
 
 
-            <div class="contact-box">
+            <!-- JOB INFO -->
+
+            <div class="job-info">
+
+                <div class="info-item">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                    <span>
+                        {{ job.experience|default:"Fresher" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                    <span>
+                        {{ job.work_time|default:"Full Time" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <span>
+                        {{ job.location }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- AGE -->
+
+            <div class="age-limit">
+
+                <strong>
+                    Age Limit:
+                </strong>
+
+                <span>
+                    {{ job.age_limit|default:"Not specified" }}
+                </span>
+
+            </div>
+
+
+            <!-- DETAILS -->
+
+            <div class="details-area">
 
                 {% if user.is_authenticated %}
 
-                <a href="{% url 'job_details' job.id %}">
-                    <button class="details-btn">
-                        More Details
-                    </button>
+                <a href="{% url 'job_details' job.id %}"
+                   class="details-btn">
+
+                    More Details
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
                 </a>
 
                 {% else %}
 
-                <a href="{% url 'login' %}">
-                    <button class="details-btn">
-                        More Details
-                    </button>
+                <a href="{% url 'login' %}"
+                   class="details-btn">
+
+                    More Details
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
                 </a>
 
                 {% endif %}
@@ -138,7 +173,13 @@
         {% empty %}
 
         <div class="no-job">
-            <p>No jobs available right now.</p>
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            <p>
+                No jobs available right now.
+            </p>
+
         </div>
 
         {% endfor %}
@@ -146,6 +187,8 @@
     </section>
 
 </section>
+
+
 
 
 </body>

@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from .models import PushSubscription
 import json
 from .models import CustomerReview
+from .models import Company
 
 from .models import (Category, Job, SavedJob,Profile,ActivityLog,)
 
@@ -225,6 +226,7 @@ DOB: {profile.dob}
         "complete_profile.html",
         {"profile": profile},
     )
+
 # =========================================================
 # HOME + SEARCH + FILTER
 # =========================================================
@@ -238,11 +240,11 @@ def home(request):
         .order_by("title")
     )
 
-    categories = Category.objects.all().order_by("name")
-
     q = request.GET.get("q", "").strip()
     place = request.GET.get("place", "").strip()
     category_id = request.GET.get("category", "").strip()
+
+    # ================= SEARCH =================
 
     if q:
         jobs = jobs.filter(
@@ -252,98 +254,84 @@ def home(request):
             | Q(category__name__icontains=q)
         )
 
+    # ================= LOCATION =================
+
     if place:
         jobs = jobs.filter(
             location__icontains=place
         )
+
+    # ================= CATEGORY =================
 
     if category_id.isdigit():
         jobs = jobs.filter(
             category_id=int(category_id)
         )
 
+    # =================================================
+    # POPULAR SEARCH
+    # Only categories which have verified jobs
+    # =================================================
+
+    categories = (
+        Category.objects
+        .filter(
+            jobs__is_verified=True
+        )
+        .distinct()
+        .order_by("name")[:6]
+    )
+
+    # =================================================
+    # COMPANIES
+    # =================================================
+
+    companies = (
+        Company.objects
+        .filter(is_active=True)
+        .order_by("name")
+    )
+
+    # ================= SAVED JOBS =================
+
     saved_job_ids = set()
 
     if request.user.is_authenticated:
         saved_job_ids = set(
-            SavedJob.objects.filter(
-                user=request.user
-            ).values_list("job_id", flat=True)
+            SavedJob.objects
+            .filter(user=request.user)
+            .values_list("job_id", flat=True)
         )
 
-    # Home page-il maximum 6 jobs
+    # ================= HOME JOBS =================
+
     home_jobs = jobs[:6]
 
-    reviews = CustomerReview.objects.filter(
-        is_approved=True
-    ).select_related("user")
+    # ================= REVIEWS =================
+
+    reviews = (
+        CustomerReview.objects
+        .filter(is_approved=True)
+        .select_related("user")
+    )
 
     return render(
         request,
         "home.html",
         {
             "reviews": reviews,
+
             "jobs": home_jobs,
+
             "categories": categories,
+
+            "companies": companies,
+
             "saved_job_ids": saved_job_ids,
+
             "has_more_jobs": jobs.count() > 6,
         },
     )
-
-
-def all_jobs(request):
-    jobs = (
-        Job.objects
-        .filter(is_verified=True)
-        .select_related("category", "owner")
-        .order_by("title")
-    )
-
-    categories = Category.objects.all().order_by("name")
-
-    q = request.GET.get("q", "").strip()
-    place = request.GET.get("place", "").strip()
-    category_id = request.GET.get("category", "").strip()
-
-    if q:
-        jobs = jobs.filter(
-            Q(title__icontains=q)
-            | Q(shop_name__icontains=q)
-            | Q(description__icontains=q)
-            | Q(category__name__icontains=q)
-        )
-
-    if place:
-        jobs = jobs.filter(
-            location__icontains=place
-        )
-
-    if category_id.isdigit():
-        jobs = jobs.filter(
-            category_id=int(category_id)
-        )
-
-    saved_job_ids = set()
-
-    if request.user.is_authenticated:
-        saved_job_ids = set(
-            SavedJob.objects.filter(
-                user=request.user
-            ).values_list("job_id", flat=True)
-        )
-
-    return render(
-        request,
-        "all_jobs.html",
-        {
-            "jobs": jobs,
-            "categories": categories,
-            "saved_job_ids": saved_job_ids,
-        },
-    )
-
-
-
 # =========================================================
 # PROFILE
 # =========================================================
@@ -933,3 +921,68 @@ def add_review(request):
     return redirect("home")
 
 
+def all_jobs(request):
+
+    jobs = (
+        Job.objects
+        .filter(is_verified=True)
+        .select_related("category", "owner")
+        .order_by("title")
+    )
+
+    categories = Category.objects.all().order_by("name")
+
+    q = request.GET.get("q", "").strip()
+    place = request.GET.get("place", "").strip()
+    category_id = request.GET.get("category", "").strip()
+
+
+    # SEARCH
+
+    if q:
+        jobs = jobs.filter(
+            Q(title__icontains=q)
+            | Q(shop_name__icontains=q)
+            | Q(description__icontains=q)
+            | Q(category__name__icontains=q)
+        )
+
+
+    # LOCATION
+
+    if place:
+        jobs = jobs.filter(
+            location__icontains=place
+        )
+
+
+    # CATEGORY
+
+    if category_id.isdigit():
+        jobs = jobs.filter(
+            category_id=int(category_id)
+        )
+
+
+    # SAVED JOBS
+
+    saved_job_ids = set()
+
+    if request.user.is_authenticated:
+
+        saved_job_ids = set(
+            SavedJob.objects
+            .filter(user=request.user)
+            .values_list("job_id", flat=True)
+        )
+
+
+    return render(
+        request,
+        "all_jobs.html",
+        {
+            "jobs": jobs,
+            "categories": categories,
+            "saved_job_ids": saved_job_ids,
+        },
+    )

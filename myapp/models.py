@@ -75,6 +75,36 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    
+
+class Company(models.Model):
+        name = models.CharField(
+            max_length=150,
+            unique=True,
+        )
+
+        logo = models.ImageField(
+            upload_to="company_logos/",
+            null=True,
+            blank=True,
+        )
+
+        is_active = models.BooleanField(
+            default=True,
+        )
+
+        created_at = models.DateTimeField(
+            auto_now_add=True,
+        )
+
+        class Meta:
+            ordering = ["name"]
+            verbose_name = "Company"
+            verbose_name_plural = "Companies"
+
+        def __str__(self):
+            return self.name
+
 
 class Job(models.Model):
     # Old jobs may not have an owner, so temporarily nullable.

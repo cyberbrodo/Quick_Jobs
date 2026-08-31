@@ -1,226 +1,640 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuickJobs | Home</title>
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="manifest" href="{% static 'manifest.json' %}">
-<meta name="theme-color" content="white">
-<link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QuickJobs | Home</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/home.css' %}">
+
+    <link rel="manifest"
+          href="{% static 'manifest.json' %}">
+
+    <meta name="theme-color"
+          content="white">
+
+    <link rel="apple-touch-icon"
+          href="{% static 'icons/icon-192.png' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 </head>
 
+
 <body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
 <header class="navbar">
 
     <div class="logo">
-        <a href="{% url 'home' %}">Quick<span>Jobs</span></a>
+        <a href="{% url 'home' %}">
+            QUICK <span>JOBS</span>
+        </a>
     </div>
 
-    <div class="profile">
-        <button class="menu-btn" onclick="openMenu()">☰</button>
+
+    <!-- DESKTOP NAV -->
+    <nav class="desktop-nav">
+
+        <a href="{% url 'home' %}">
+            HOME
+        </a>
+
+        <a href="#jobs">
+            JOBS
+        </a>
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'saved_jobs' %}">
+                SAVED JOBS
+            </a>
+
+            <a href="{% url 'profile' %}">
+                PROFILE
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'login' %}">
+                PROFILE
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="nav-right">
+
+        {% if user.is_authenticated %}
+
+            <!-- DESKTOP PROFILE BUTTON -->
+<!--            <button type="button"-->
+<!--                    class="profile-open"-->
+<!--                    onclick="openMenu()"-->
+<!--                    aria-label="Open profile menu">-->
+
+<!--                <i class="fa-regular fa-user"></i>-->
+
+<!--            </button>-->
+
+            <!-- MOBILE MENU BUTTON -->
+            <button type="button"
+                    class="mobile-menu-btn"
+                    onclick="openMenu()"
+                    aria-label="Open menu">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+        {% else %}
+
+            <!-- DESKTOP + MOBILE LOGIN -->
+            <a href="{% url 'login' %}"
+               class="signin-btn">
+
+                Login
+
+            </a>
+
+        {% endif %}
+
     </div>
-
-    <form class="search-box" method="GET" id="searchForm">
-
-        <input
-        type="text"
-        class="search"
-        name="q"
-        placeholder="Search jobs..."
-        value="{{ request.GET.q }}">
-
-        <input
-        type="text"
-        class="search"
-        name="place"
-        placeholder="Enter place"
-        value="{{ request.GET.place }}">
-
-        <select name="category" class="search">
-            <option value="">All Categories</option>
-
-            {% for cat in categories %}
-            <option value="{{ cat.id }}"
-            {% if request.GET.category == cat.id|stringformat:"s" %}
-            selected
-            {% endif %}>
-                {{ cat.name }}
-            </option>
-            {% endfor %}
-
-        </select>
-
-    </form>
-
 
 </header>
 
 
 
-<!--slidert-->
-
-<div id="sideMenu" class="side-menu">
-
-<div class="menu-header">
-    <h3>QuickJobs</h3>
-    <span class="close-btn" onclick="closeMenu()">✕</span>
-</div>
+<!-- =====================================================
+     SIDE MENU
+     ONLY LOGGED-IN USERS
+===================================================== -->
 
 {% if user.is_authenticated %}
 
-<a href="{% url 'profile' %}">
-    <i class="fa-regular fa-user"></i>
-    My Profile
-</a>
+<div class="side-menu"
+     id="sideMenu">
 
-<a href="{% url 'saved_jobs' %}">
-    <i class="fa-regular fa-bookmark"></i>
-    Saved Jobs
-</a>
 
-<!--<a href="{% url 'add_job' %}">-->
-<!--     <i class="fa-solid fa-plus"></i>-->
-<!--    Add Jobs-->
-<!--</a>-->
+    <!-- CLOSE -->
+    <button type="button"
+            class="side-close"
+            onclick="closeMenu()"
+            aria-label="Close menu">
 
-<a href="{% url 'logout_user' %}">
-    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-    Logout</a>
+        <i class="fa-solid fa-xmark"></i>
 
-{% else %}
+    </button>
 
-<a href="{% url 'login' %}">
-    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-    Login
-</a>
+
+    <!-- PROFILE -->
+    <a href="{% url 'profile' %}"
+       onclick="closeMenu()">
+
+        <i class="fa-solid fa-user"></i>
+
+        <span>Profile</span>
+
+    </a>
+
+
+    <!-- SAVED JOBS -->
+    <a href="{% url 'saved_jobs' %}">
+
+
+        <i class="fa-solid fa-bookmark"></i>
+
+        <span>Saved Jobs</span>
+
+    </a>
+
+
+    <!-- JOBS -->
+    <a href="#jobs"
+       onclick="closeMenu()">
+
+        <i class="fa-solid fa-briefcase"></i>
+
+        <span>Jobs</span>
+
+    </a>
+
+
+    <!-- LOGOUT -->
+    <a href="{% url 'logout_user' %}"
+       class="logout-link">
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        <span>Logout</span>
+
+    </a>
+
+</div>
 
 {% endif %}
-
-</div>
-
-{% if user.is_authenticated %}
-
-<section class="welcome">
-
-    <h2>
-        Welcome,
-        {{ user.profile.full_name|default:user.first_name }}
-    </h2>
-
-    <p>
-        Find your next opportunity.<br>
-        Search jobs, save favourites and contact employers instantly.
-    </p>
-
-</section>
-
-{% else %}
+<!-- =====================================================
+     HERO
+===================================================== -->
 
 <section class="hero">
 
-    <h1>Welcome to <span>QuickJobs</span> </h1>
-
-    <p>
+    <div class="hero-content">
 
 
-        ✔ Verified Employers<br>
-        ✔ Easy Job Search<br>
-        ✔ Fast Hiring Process<br><br>
+        <h1>
 
-        Browse available jobs below.<br>
-        Login to view full job details and contact employers.
-    </p>
+            Find the perfect<br>
+
+            <span>job for you</span>
+
+        </h1>
+
+
+        <p class="hero-subtitle">
+
+            Search your career opportunity through thousands of jobs
+
+        </p>
+
+
+        <!-- SEARCH -->
+
+        <form class="search-box"
+              method="GET"
+              id="searchForm">
+
+
+            <div class="search-field">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search your job"
+                    value="{{ request.GET.q }}"
+                >
+
+            </div>
+
+
+            <div class="search-divider"></div>
+
+
+            <div class="search-field">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <input
+                    type="text"
+                    name="place"
+                    placeholder="Select location"
+                    value="{{ request.GET.place }}"
+                >
+
+            </div>
+
+
+            <button type="submit"
+                    class="search-button">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+            </button>
+
+
+            <select name="category"
+                    class="category-hidden">
+
+                <option value="">
+                    All Categories
+                </option>
+
+                {% for cat in categories %}
+
+                    <option
+                        value="{{ cat.id }}"
+                        {% if request.GET.category == cat.id|stringformat:"s" %}
+                        selected
+                        {% endif %}
+                    >
+
+                        {{ cat.name }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </form>
+
+
+
+        <!-- =================================================
+             POPULAR SEARCH
+        ================================================= -->
+
+        <div class="popular-search">
+
+            <h3>
+                Popular Search
+            </h3>
+
+
+            <div class="popular-tags">
+
+                {% for cat in categories %}
+
+                    <a href="?category={{ cat.id }}">
+
+                        {{ cat.name }}
+
+                    </a>
+
+                {% empty %}
+
+                    <span>
+                        No categories available
+                    </span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             COMPANY SLIDER
+        ================================================= -->
+
+        {% if companies %}
+
+        <div class="companies-slider">
+
+            <div class="companies-track">
+
+
+                {% for company in companies %}
+
+                    <div class="company-item">
+
+                        <div class="company-circle">
+
+                            {% if company.logo %}
+
+                                <img
+                                    src="{{ company.logo.url }}"
+                                    alt="{{ company.name }}"
+                                >
+
+                            {% else %}
+
+                                {{ company.name|first|upper }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <span class="company-name">
+
+                            {{ company.name }}
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+
+
+                <!-- DUPLICATE FOR INFINITE SLIDE -->
+
+                {% for company in companies %}
+
+                    <div class="company-item">
+
+                        <div class="company-circle">
+
+                            {% if company.logo %}
+
+                                <img
+                                    src="{{ company.logo.url }}"
+                                    alt="{{ company.name }}"
+                                >
+
+                            {% else %}
+
+                                {{ company.name|first|upper }}
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <span class="company-name">
+
+                            {{ company.name }}
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
 
 </section>
 
-{% endif %}
+
+
+<!-- =====================================================
+     JOBS
+===================================================== -->
+
+<section class="job-list-section"
+         id="jobs">
+
+
+    <div class="section-heading">
+
+        <span>
+            AVAILABLE JOBS
+        </span>
+
+        <h2>
+            Find your next opportunity
+        </h2>
+
+    </div>
 
 
 
+    <div class="job-list">
 
-<section class="job-list">
 
-{% for job in jobs %}
+        {% for job in jobs %}
 
-<div class="job-card">
 
-{% if user.is_authenticated %}
-<a href="{% url 'save_job' job.id %}" class="save-btn">
-    {% if job.id in saved_job_ids %}
-        <i class="fa-solid fa-bookmark"></i>
-    {% else %}
-        <i class="fa-regular fa-bookmark"></i>
+            <div class="job-card">
+
+
+                {% if user.is_authenticated %}
+
+                    <a href="{% url 'save_job' job.id %}"
+                       class="save-btn">
+
+                        {% if job.id in saved_job_ids %}
+
+                            <i class="fa-solid fa-bookmark"></i>
+
+                        {% else %}
+
+                            <i class="fa-regular fa-bookmark"></i>
+
+                        {% endif %}
+
+                    </a>
+
+                {% endif %}
+
+
+
+                <div class="job-top">
+
+
+                    <div class="job-logo">
+
+                        {% if job.shop_photo %}
+
+                            <img
+                                src="{{ job.shop_photo.url }}"
+                                alt="{{ job.shop_name }}"
+                            >
+
+                        {% else %}
+
+                            {{ job.shop_name|first|upper }}
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <div class="job-company-info">
+
+                        <h3>
+                            {{ job.shop_name }}
+                        </h3>
+
+                        <p class="job-title">
+                            {{ job.title }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="job-info">
+
+
+                    <span>
+
+                        <i class="fa-solid fa-briefcase"></i>
+
+                        {{ job.experience|default:"Fresher" }}
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        {{ job.work_time|default:"Full Time" }}
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        {{ job.location }}
+
+                    </span>
+
+
+                </div>
+
+
+
+                <p class="age-limit">
+
+                    <b>Age Limit:</b>
+
+                    {{ job.age_limit|default:"Not specified" }}
+
+                </p>
+
+
+
+                <div class="contact-box">
+
+
+                    {% if user.is_authenticated %}
+
+                        <a href="{% url 'job_details' job.id %}"
+                           class="details-btn">
+
+                            More Details
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                    {% else %}
+
+                        <a href="{% url 'login' %}"
+                           class="details-btn">
+
+                            More Details
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        {% empty %}
+
+            <p class="no-job">
+
+                No jobs available.
+
+            </p>
+
+        {% endfor %}
+
+
+    </div>
+
+
+
+    {% if has_more_jobs %}
+
+        <div class="all-jobs-button-section">
+
+            <a href="{% url 'all_jobs' %}"
+               class="all-jobs-btn">
+
+                View All Jobs
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
     {% endif %}
-</a>
-{% endif %}
-
-<div class="job-main">
-
-<h3>{{ job.shop_name }}</h3>
-
-<p><b>Job:</b> {{ job.title }}</p>
-
-<p class="exp">
-{{ job.experience|default:"Fresher" }}
-</p>
-
-<p><b>Work Time:</b> {{ job.work_time|default:"Full Time" }}</p>
-
-<p><b>Age Limit:</b> {{ job.age_limit|default:"Not specified" }}</p>
-
-<p><b>Location:</b> {{ job.location }}</p>
-
-</div>
-
-
-
-<div class="contact-box">
-
-{% if user.is_authenticated %}
-
-<a href="{% url 'job_details' job.id %}">
-    <button class="details-btn">More Details</button>
-</a>
-
-{% else %}
-
-<a href="{% url 'login' %}">
-    <button class="details-btn">More Details</button>
-</a>
-
-{% endif %}
-
-</div>
-
-</div>
-
-{% empty %}
-
-<p class="no-job">No jobs available</p>
-
-{% endfor %}
 
 </section>
 
 
-{% if has_more_jobs %}
-    <section class="all-jobs-button-section">
 
-        <a href="{% url 'all_jobs' %}" class="all-jobs-btn"> View All Jobs </a>
-    </section>
-    {% endif %}
+<!-- =====================================================
+     REVIEWS
+===================================================== -->
 
-
-
-  {% if reviews %}
+{% if reviews %}
 
 <section class="reviews-section">
 
+
     <div class="reviews-header">
+
+        <span>
+            USER REVIEWS
+        </span>
+
+        <h2>
+            What our users say
+        </h2>
 
         <p>
             Real experiences from QuickJobs users.
@@ -229,37 +643,92 @@
     </div>
 
 
+
     <div class="reviews-slider">
 
         <div class="review-track">
 
+
             {% for review in reviews %}
 
-            <div class="review-card">
+                <div class="review-card">
 
-                <div class="stars">
+                    <div class="stars">
 
-                    {% for i in "12345" %}
-                        {% if forloop.counter <= review.rating %}
-                            ★
-                        {% else %}
-                            ☆
-                        {% endif %}
-                    {% endfor %}
+                        {% for i in "12345" %}
+
+                            {% if forloop.counter <= review.rating %}
+
+                                ★
+
+                            {% else %}
+
+                                ☆
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <p>
+                        "{{ review.review }}"
+                    </p>
+
+
+                    <h4>
+
+                        {{ review.user.profile.full_name|default:review.user.first_name }}
+
+                    </h4>
 
                 </div>
 
-                <p>
-                    "{{ review.review }}"
-                </p>
+            {% endfor %}
 
-                <h4>
-                     {{ review.user.profile.full_name|default:review.user.first_name }}
-                </h4>
 
-            </div>
+
+            <!-- DUPLICATE REVIEWS -->
+
+            {% for review in reviews %}
+
+                <div class="review-card">
+
+                    <div class="stars">
+
+                        {% for i in "12345" %}
+
+                            {% if forloop.counter <= review.rating %}
+
+                                ★
+
+                            {% else %}
+
+                                ☆
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <p>
+                        "{{ review.review }}"
+                    </p>
+
+
+                    <h4>
+
+                        {{ review.user.profile.full_name|default:review.user.first_name }}
+
+                    </h4>
+
+                </div>
 
             {% endfor %}
+
 
         </div>
 
@@ -270,47 +739,82 @@
 {% endif %}
 
 
+
+<!-- =====================================================
+     REVIEW FORM
+===================================================== -->
+
 {% if user.is_authenticated %}
 
 <section class="review-form-section">
 
-    <h2>Share Your Experience</h2>
+    <span>
+        SHARE YOUR EXPERIENCE
+    </span>
 
-    <form method="POST" action="{% url 'add_review' %}">
+
+    <h2>
+        How was your QuickJobs experience?
+    </h2>
+
+
+    <form method="POST"
+          action="{% url 'add_review' %}">
 
         {% csrf_token %}
 
 
-        <div class="rating-select">
+        <div class="star-rating">
+
+            <input type="radio"
+                   name="rating"
+                   id="star5"
+                   value="5"
+                   required>
+
+            <label for="star5">★</label>
 
 
+            <input type="radio"
+                   name="rating"
+                   id="star4"
+                   value="4">
 
-    <div class="star-rating">
+            <label for="star4">★</label>
 
-        <input type="radio" name="rating" id="star5" value="5" required>
-        <label for="star5">★</label>
 
-        <input type="radio" name="rating" id="star4" value="4">
-        <label for="star4">★</label>
+            <input type="radio"
+                   name="rating"
+                   id="star3"
+                   value="3">
 
-        <input type="radio" name="rating" id="star3" value="3">
-        <label for="star3">★</label>
+            <label for="star3">★</label>
 
-        <input type="radio" name="rating" id="star2" value="2">
-        <label for="star2">★</label>
 
-        <input type="radio" name="rating" id="star1" value="1">
-        <label for="star1">★</label>
+            <input type="radio"
+                   name="rating"
+                   id="star2"
+                   value="2">
 
-    </div>
+            <label for="star2">★</label>
 
-</div>
+
+            <input type="radio"
+                   name="rating"
+                   id="star1"
+                   value="1">
+
+            <label for="star1">★</label>
+
+        </div>
+
 
         <textarea
             name="review"
             placeholder="Write your experience..."
             maxlength="500"
             required></textarea>
+
 
         <button type="submit">
             Submit Review
@@ -323,118 +827,241 @@
 {% endif %}
 
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer class="footer">
+
 
     <div class="footer-container">
 
+
         <div class="footer-box">
-            <h2>QuickJobs</h2>
+
+            <h2>
+                QuickJobs
+            </h2>
+
             <p>
-                Find trusted jobs near you. Connecting job seekers and employers across Kerala.
+                Find trusted jobs near you.
+                Connecting job seekers and employers across Kerala.
             </p>
-        </div>
-
-        <div class="footer-box">
-            <h3>Quick Links</h3>
-
-            <a href="/">Home</a>
-            <a href="/">Jobs</a>
-            <a href="#">About Us</a>
 
         </div>
 
-        <div class="footer-box">
-            <h3>Legal</h3>
 
-            <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
-            <a href="{% url 'terms'%}">Terms & Conditions</a>
-            <a href="{% url 'disclaimer'%}">Disclaimer</a>
-<!--            <a href="/report-job/">Report a Job</a>-->
+
+        <div class="footer-box">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="#jobs">
+                Jobs
+            </a>
+
         </div>
 
-        <div class="footer-box">
-            <h3>Contact</h3>
 
-            <p>📧 quickjobs073@gmail.com</p>
-            <p>🌐 www.quick-jobs.in</p>
+
+        <div class="footer-box">
+
+            <h3>
+                Legal
+            </h3>
+
+            <a href="{% url 'privacy_policy' %}">
+                Privacy Policy
+            </a>
+
+            <a href="{% url 'terms' %}">
+                Terms & Conditions
+            </a>
+
+            <a href="{% url 'disclaimer' %}">
+                Disclaimer
+            </a>
+
+        </div>
+
+
+
+        <div class="footer-box">
+
+            <h3>
+                Contact
+            </h3>
+
+            <p>
+
+                <i class="fa-solid fa-envelope"></i>
+
+                quickjobs073@gmail.com
+
+            </p>
+
+
+            <p>
+
+                <i class="fa-solid fa-globe"></i>
+
+                www.quick-jobs.in
+
+            </p>
+
 
             <div class="social-icons">
-                <a href="#"></a>
-                <a href="#"></a>
-                <a href="#"></a>
+
+                <a href="#">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+
             </div>
+
         </div>
 
     </div>
 
+
+
     <div class="footer-bottom">
+
         © 2026 QuickJobs. All Rights Reserved.
+
     </div>
 
 </footer>
 
 
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
 <script>
-function toggleProfile(){
-document.getElementById("profileMenu").classList.toggle("show");
+
+function openMenu() {
+
+    document
+        .getElementById("sideMenu")
+        .classList.add("show");
+
 }
 
-const form = document.getElementById("searchForm");
-const inputs = form.querySelectorAll("input, select");
 
-let timer;
+function closeMenu() {
 
-inputs.forEach(input => {
-    input.addEventListener("input", () => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            form.submit();
-        }, 2000);
-    });
+    document
+        .getElementById("sideMenu")
+        .classList.remove("show");
 
-    input.addEventListener("change", () => {
-        form.submit();
-    });
+}
+
+
+document.addEventListener("click", function(event) {
+
+    const menu =
+        document.getElementById("sideMenu");
+
+    const button =
+        document.querySelector(".mobile-menu-btn");
+
+
+    if (
+        menu.classList.contains("show") &&
+        !menu.contains(event.target) &&
+        !button.contains(event.target)
+    ) {
+
+        closeMenu();
+
+    }
+
 });
 
 
-</script>
 
-<script>
+/* SEARCH AFTER 2 SECONDS */
+
+const form =
+    document.getElementById("searchForm");
+
+const inputs =
+    form.querySelectorAll("input");
+
+let searchTimer;
+
+
+inputs.forEach(function(input) {
+
+    input.addEventListener("input", function() {
+
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(function() {
+
+            form.submit();
+
+        }, 2000);
+
+    });
+
+});
+
+
+
+/* SERVICE WORKER */
+
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/static/sw.js")
-    .then(() => console.log("Service Worker Registered"));
+
+    navigator.serviceWorker
+        .register("/static/sw.js")
+        .then(function() {
+
+            console.log(
+                "Service Worker Registered"
+            );
+
+        });
+
 }
 
-function openMenu(){
-    document.getElementById("sideMenu").classList.add("show");
-}
-
-function closeMenu(){
-    document.getElementById("sideMenu").classList.remove("show");
-}
-
-window.onclick = function(e){
-    const menu = document.getElementById("sideMenu");
-
-    if(
-        menu.classList.contains("show") &&
-        !menu.contains(e.target) &&
-        !e.target.classList.contains("menu-btn")
-    ){
-        closeMenu();
-    }
-}
 
 if ("Notification" in window) {
-    if (Notification.permission !== "granted") {
+
+    if (
+        Notification.permission !== "granted"
+    ) {
+
         Notification.requestPermission();
+
     }
+
 }
 
-
-
 </script>
-<script src="{% static 'js/notification.js' %}"></script>
+
+
+<script src="{% static 'js/notification.js' %}">
+</script>
+
+
 </body>
+
 </html>
+
