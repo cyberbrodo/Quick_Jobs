@@ -1,186 +1,911 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
+/* =====================================================
+   RESET
+===================================================== */
 
-body{
-    background:#f5f7fa;
-    color:#222;
-}
-
-.details-page{
-    max-width:850px;
-    margin:40px auto;
-    padding:20px;
-    background:#fff;
-    border-radius:12px;
-}
-
-.details-card{
-    max-width:900px;
-    margin:auto;
-    /*background:#fff;*/
-    border-radius:16px;
-    padding:30px;
-    /*box-shadow:0 5px 18px rgba(0,0,0,.08);*/
-}
-
-.details-header{
-    margin-bottom:25px;
-}
-
-.back-btn{
-    text-decoration:none;
-    color:#0a3d62;
-    font-weight:600;
-}
-
-.back-btn:hover{
-    color:#1dd1a1;
-}
-
-.job-main h2{
-    font-size:32px;
-    color:#222;
-    margin-bottom:8px;
-}
-
-.job-main h4{
-    color:#1dd1a1;
-    font-size:24px;
-    margin-bottom:25px;
-}
-
-.job-info{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;
-}
-
-.job-info div{
-    background:#fafafa;
-    border:1px solid #ececec;
-    border-radius:10px;
-    padding:15px;
-}
-
-.job-info span{
-    display:block;
-    font-size:13px;
-    color:#777;
-    margin-bottom:6px;
-}
-
-.job-info strong{
-    font-size:17px;
-}
-
-.salary{
-    color:#16c79a;
-}
-
-hr{
-    margin:30px 0;
-    border:none;
-    border-top:1px solid #eee;
-}
-
-.job-main h3{
-    margin-bottom:15px;
-}
-
-.description{
-    color:#555;
-    line-height:1.8;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 
+/* =====================================================
+   BODY
+===================================================== */
 
-.contact-label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:15px;
-    color:#0a3d62;
-}
-.contact-btn{
-    display:inline-block;
-    width:100%;
-    padding:14px;
-    background:#25D366;
-    color:#fff;
-    text-align:center;
-    text-decoration:none;
-    border-radius:10px;
-    font-weight:600;
-    transition:.3s;
-}
+body {
+    font-family: Arial, Helvetica, sans-serif;
 
-.contact-btn:hover{
-    background:#1ebe5d;
-}
+    background: #ffffff;
 
-.note{
-    display:block;
-    margin-top:12px;
-    text-align:center;
-    color:#666;
-    font-size:13px;
-}
-
-@media(max-width:768px){
-
-.details-card{
-    padding:20px;
+    color: #111827;
 }
 
 
+/* =====================================================
+   PAGE
+===================================================== */
 
-.job-info{
-    grid-template-columns:1fr;
-}
+.details-page {
 
-.contact-btn{
-    height:48px;
-}
+    width: 86%;
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+    padding: 45px 0 80px;
 
 }
 
 
+/* =====================================================
+   BACK BUTTON
+===================================================== */
 
-h1{
-    margin-top:20px;
-    font-size:32px;
+.back-btn {
+
+    width: fit-content;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 25px;
+
+    text-decoration: none;
+
+    color: #176b55;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+
 }
 
-h2{
-    color:#666;
-    margin:8px 0 25px;
-    font-size:22px;
-    font-weight:500;
+
+.back-btn:hover {
+
+    transform: translateX(-4px);
+
 }
 
-h3{
-    margin-bottom:15px;
-    font-size:22px;
+
+.back-btn i {
+
+    font-size: 13px;
+
 }
 
-p{
-    margin:10px 0;
-    line-height:1.7;
+
+/* =====================================================
+   MAIN CARD
+===================================================== */
+
+.details-card {
+
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e8e8e8;
+
+    border-radius: 20px;
+
+    padding: 35px;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.045);
+
 }
 
-hr{
-    margin:30px 0;
-    border:0;
-    border-top:1px solid #e5e5e5;
+
+/* =====================================================
+   JOB HEADER
+===================================================== */
+
+.job-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding-bottom: 30px;
+
+    border-bottom: 1px solid #eeeeee;
+
 }
 
-.requirements{
-    padding-left:20px;
+
+.company-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    min-width: 0;
+
 }
 
-.requirements li{
-    margin:10px 0;
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+.company-avatar {
+
+    width: 75px;
+
+    height: 75px;
+
+    min-width: 75px;
+
+    border-radius: 50%;
+
+    background: #edf3f1;
+
+    color: #176b55;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   COMPANY TEXT
+===================================================== */
+
+.company-text {
+
+    min-width: 0;
+
+}
+
+
+.company-label {
+
+    display: block;
+
+    color: #176b55;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.company-text h1 {
+
+    font-size: 30px;
+
+    color: #111827;
+
+    margin-bottom: 7px;
+
+    word-break: break-word;
+
+}
+
+
+.company-text h2 {
+
+    font-size: 16px;
+
+    color: #6b7280;
+
+    font-weight: 500;
+
+}
+
+
+/* =====================================================
+   VERIFIED BADGE
+===================================================== */
+
+.verified-badge {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    background: #edf3f1;
+
+    color: #176b55;
+
+    padding: 9px 13px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+.verified-badge i {
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   QUICK INFO
+===================================================== */
+
+.quick-info {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+
+    padding: 30px 0;
+
+    border-bottom: 1px solid #eeeeee;
+
+}
+
+
+.quick-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 17px;
+
+    background: #fafcfb;
+
+    border: 1px solid #edf1ef;
+
+    border-radius: 13px;
+
+}
+
+
+/* =====================================================
+   QUICK ICON
+===================================================== */
+
+.quick-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    border-radius: 50%;
+
+    background: #edf3f1;
+
+    color: #176b55;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 15px;
+
+}
+
+
+/* =====================================================
+   QUICK TEXT
+===================================================== */
+
+.quick-item span {
+
+    display: block;
+
+    color: #8a929b;
+
+    font-size: 11px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.quick-item strong {
+
+    display: block;
+
+    color: #222;
+
+    font-size: 13px;
+
+    word-break: break-word;
+
+}
+
+
+.quick-item .salary {
+
+    color: #176b55;
+
+}
+
+
+/* =====================================================
+   CONTENT SECTION
+===================================================== */
+
+.content-section {
+
+    padding: 32px 0;
+
+    border-bottom: 1px solid #eeeeee;
+
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.section-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.title-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 10px;
+
+    background: #edf3f1;
+
+    color: #176b55;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 15px;
+
+}
+
+
+.section-title h3 {
+
+    font-size: 20px;
+
+    color: #111827;
+
+}
+
+
+/* =====================================================
+   DESCRIPTION
+===================================================== */
+
+.description {
+
+    color: #5d6670;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+
+}
+
+
+.description p {
+
+    margin-bottom: 12px;
+
+}
+
+
+/* =====================================================
+   REQUIREMENTS
+===================================================== */
+
+.requirements-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.requirement-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 16px;
+
+    border: 1px solid #edf1ef;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+}
+
+
+.requirement-item i {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #edf3f1;
+
+    color: #176b55;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 14px;
+
+}
+
+
+.requirement-item span {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #8a929b;
+
+    margin-bottom: 4px;
+
+}
+
+
+.requirement-item strong {
+
+    font-size: 13px;
+
+    color: #222;
+
+}
+
+
+/* =====================================================
+   COMPANY DETAILS
+===================================================== */
+
+.company-details {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+}
+
+
+.company-about h4 {
+
+    font-size: 18px;
+
+    color: #111827;
+
+    margin-bottom: 10px;
+
+}
+
+
+.company-about p {
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+.company-about p i {
+
+    color: #176b55;
+
+    margin-right: 6px;
+
+}
+
+
+/* =====================================================
+   SHOP PHOTO
+===================================================== */
+
+.shop-photo {
+
+    width: 220px;
+
+    height: 140px;
+
+    overflow: hidden;
+
+    border-radius: 13px;
+
+    border: 1px solid #eeeeee;
+
+}
+
+
+.shop-photo img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+
+/* =====================================================
+   APPLY BOX
+===================================================== */
+
+.apply-box {
+
+    margin-top: 32px;
+
+    padding: 25px;
+
+    background: #f7faf8;
+
+    border: 1px solid #e7efeb;
+
+    border-radius: 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+}
+
+
+.apply-text {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+}
+
+
+/* =====================================================
+   APPLY ICON
+===================================================== */
+
+.apply-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    min-width: 50px;
+
+    border-radius: 50%;
+
+    background: #e1f5e9;
+
+    color: #25d366;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 24px;
+
+}
+
+
+.apply-text h3 {
+
+    font-size: 16px;
+
+    color: #111827;
+
+    margin-bottom: 5px;
+
+}
+
+
+.apply-text p {
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+}
+
+
+/* =====================================================
+   WHATSAPP BUTTON
+===================================================== */
+
+.contact-btn {
+
+    height: 50px;
+
+    padding: 0 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    background: #176b55;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: 0.25s ease;
+
+}
+
+
+.contact-btn:hover {
+
+    background: #0f5744;
+
+    transform: translateY(-2px);
+
+}
+
+
+.contact-btn i {
+
+    font-size: 18px;
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .details-page {
+
+        width: 92%;
+
+    }
+
+
+    .quick-info {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .apply-box {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .contact-btn {
+
+        width: 100%;
+
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 650px) {
+
+    .details-page {
+
+        width: 92%;
+
+        padding: 30px 0 60px;
+
+    }
+
+
+    .details-card {
+
+        padding: 22px;
+
+        border-radius: 16px;
+
+    }
+
+
+    .job-header {
+
+        flex-direction: column;
+
+        gap: 18px;
+
+    }
+
+
+    .company-avatar {
+
+        width: 58px;
+
+        height: 58px;
+
+        min-width: 58px;
+
+        font-size: 22px;
+
+    }
+
+
+    .company-text h1 {
+
+        font-size: 23px;
+
+    }
+
+
+    .verified-badge {
+
+        align-self: flex-start;
+
+    }
+
+
+    .requirements-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .company-details {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .shop-photo {
+
+        width: 100%;
+
+        height: 190px;
+
+    }
+
+
+    .apply-text {
+
+        align-items: flex-start;
+
+    }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+
+    .company-info {
+
+        align-items: flex-start;
+
+    }
+
+
+    .company-text h1 {
+
+        font-size: 20px;
+
+    }
+
+
+    .apply-box {
+
+        padding: 18px;
+
+    }
+
+
+    .apply-icon {
+
+        width: 44px;
+
+        height: 44px;
+
+        min-width: 44px;
+
+    }
+
 }

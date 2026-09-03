@@ -11,19 +11,20 @@
 
     <link rel="stylesheet" href="{% static 'css/all_jobs.css' %}">
 
-    <!-- Icons -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
 
 <body>
 
 
-
-
 <!-- ================= ALL JOBS ================= -->
 
 <section class="all-jobs-page">
+
+    <!-- ================= HEADER ================= -->
 
     <div class="all-jobs-header">
 
@@ -46,17 +47,23 @@
 
         <div class="job-card">
 
-            <!-- TOP -->
+
+            <!-- ================= TOP ================= -->
 
             <div class="job-top">
 
                 <div class="company-info">
+
+                    <!-- COMPANY AVATAR -->
 
                     <div class="company-avatar">
 
                         {{ job.shop_name|first|upper }}
 
                     </div>
+
+
+                    <!-- COMPANY NAME + JOB -->
 
                     <div class="company-text">
 
@@ -73,20 +80,55 @@
                 </div>
 
 
-                <!-- BOOKMARK -->
+                <!-- ================= BOOKMARK ================= -->
 
-                <button class="bookmark-btn">
+                {% if user.is_authenticated %}
 
-                    <i class="fa-regular fa-bookmark"></i>
+                    <a href="{% url 'save_job' job.id %}"
+                       class="save-btn">
 
-                </button>
+                        <button type="button"
+                                class="bookmark-btn">
+
+                            {% if job.id in saved_job_ids %}
+
+                                <i class="fa-solid fa-bookmark"></i>
+
+                            {% else %}
+
+                                <i class="fa-regular fa-bookmark"></i>
+
+                            {% endif %}
+
+                        </button>
+
+                    </a>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}"
+                       class="bookmark-login">
+
+                        <button type="button"
+                                class="bookmark-btn">
+
+                            <i class="fa-regular fa-bookmark"></i>
+
+                        </button>
+
+                    </a>
+
+                {% endif %}
 
             </div>
+            <!-- IMPORTANT: JOB TOP CLOSE -->
 
 
-            <!-- JOB INFO -->
+            <!-- ================= JOB INFO ================= -->
 
             <div class="job-info">
+
+                <!-- EXPERIENCE -->
 
                 <div class="info-item">
 
@@ -99,6 +141,8 @@
                 </div>
 
 
+                <!-- WORK TIME -->
+
                 <div class="info-item">
 
                     <i class="fa-regular fa-clock"></i>
@@ -109,6 +153,8 @@
 
                 </div>
 
+
+                <!-- LOCATION -->
 
                 <div class="info-item">
 
@@ -123,7 +169,7 @@
             </div>
 
 
-            <!-- AGE -->
+            <!-- ================= AGE LIMIT ================= -->
 
             <div class="age-limit">
 
@@ -138,37 +184,40 @@
             </div>
 
 
-            <!-- DETAILS -->
+            <!-- ================= DETAILS BUTTON ================= -->
 
             <div class="details-area">
 
                 {% if user.is_authenticated %}
 
-                <a href="{% url 'job_details' job.id %}"
-                   class="details-btn">
+                    <a href="{% url 'job_details' job.id %}"
+                       class="details-btn">
 
-                    More Details
+                        More Details
 
-                    <i class="fa-solid fa-arrow-right"></i>
+                        <i class="fa-solid fa-arrow-right"></i>
 
-                </a>
+                    </a>
 
                 {% else %}
 
-                <a href="{% url 'login' %}"
-                   class="details-btn">
+                    <a href="{% url 'login' %}"
+                       class="details-btn">
 
-                    More Details
+                        More Details
 
-                    <i class="fa-solid fa-arrow-right"></i>
+                        <i class="fa-solid fa-arrow-right"></i>
 
-                </a>
+                    </a>
 
                 {% endif %}
 
             </div>
 
+
         </div>
+        <!-- JOB CARD END -->
+
 
         {% empty %}
 
@@ -189,7 +238,6 @@
 </section>
 
 
-
-
 </body>
+
 </html>

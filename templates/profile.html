@@ -1,168 +1,453 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>My Profile | QuickJobs</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | QuickJobs</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/profile.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
+
 
 <body>
 
-<div class="profile-box">
+
+<section class="profile-page">
 
 
+    <!-- ================= HEADER ================= -->
 
-<div class="profile-header">
-    <h2>
-        {% if edit %}
-            Edit Profile
-        {% else %}
-            My Profile
-        {% endif %}
-    </h2>
-</div>
+    <div class="profile-title">
 
-{% if edit %}
+        <span>MY ACCOUNT</span>
 
-<form method="POST">
-    {% csrf_token %}
+        <h1>
+            {% if edit %}
+                Edit Profile
+            {% else %}
+                My Profile
+            {% endif %}
+        </h1>
 
-    <div class="profile-info">
+    </div>
 
-        <div class="info-row">
-            <span>Name</span>
-            <input type="text"
-                   name="full_name"
-                   value="{{ request.user.profile.full_name|default:request.user.first_name }}"
-                   required>
+
+    <!-- ================= PROFILE CARD ================= -->
+
+    {% if edit %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="profile-card">
+
+
+            <div class="profile-info">
+
+
+                <!-- NAME -->
+
+                <div class="info-row">
+
+                    <label>
+
+                        <i class="fa-solid fa-user"></i>
+
+                        Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="full_name"
+                        value="{{ request.user.profile.full_name|default:request.user.first_name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="info-row">
+
+                    <label>
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        Phone
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ request.user.profile.phone }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PLACE -->
+
+                <div class="info-row">
+
+                    <label>
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        Place
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="district"
+                        value="{{ request.user.profile.district }}"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="profile-actions">
+
+
+                <button
+                    type="submit"
+                    class="update-btn">
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Update Profile
+
+                </button>
+
+
+                <a href="{% url 'profile' %}"
+                   class="cancel-btn">
+
+                    Cancel
+
+                </a>
+
+
+            </div>
+
+
         </div>
 
-        <div class="info-row">
-            <span>Phone</span>
-            <input type="text"
-                   name="phone"
-                   value="{{ request.user.profile.phone }}"
-                   required>
+    </form>
+
+
+    {% else %}
+
+
+    <div class="profile-card">
+
+
+        <div class="profile-avatar">
+
+            {{ request.user.profile.full_name|default:request.user.first_name|first|upper }}
+
         </div>
 
-        <div class="info-row">
-            <span>Place</span>
-            <input type="text"
-                   name="district"
-                   value="{{ request.user.profile.district }}">
+
+        <div class="profile-info">
+
+
+            <!-- NAME -->
+
+            <div class="info-row">
+
+                <span class="info-label">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    Name
+
+                </span>
+
+
+                <strong>
+
+                    {{ request.user.profile.full_name|default:request.user.first_name }}
+
+                </strong>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="info-row">
+
+                <span class="info-label">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    Phone
+
+                </span>
+
+
+                <strong>
+
+                    {{ request.user.profile.phone|default:"Not Added" }}
+
+                </strong>
+
+            </div>
+
+
+            <!-- PLACE -->
+
+            <div class="info-row">
+
+                <span class="info-label">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    Place
+
+                </span>
+
+
+                <strong>
+
+                    {{ request.user.profile.district|default:"Not Added" }}
+
+                </strong>
+
+            </div>
+
+
         </div>
 
-    </div>
 
-    <div class="profile-actions">
+        <div class="profile-actions">
 
-        <button type="submit" class="edit-btn">
-            Update Profile
-        </button>
 
-        <a href="{% url 'profile' %}">
-            <button type="button" class="logout-btn">
-                Cancel
-            </button>
-        </a>
+            <a href="{% url 'edit_profile' %}"
+               class="edit-btn">
 
-    </div>
+                <i class="fa-solid fa-pen"></i>
 
-</form>
+                Edit Profile
 
-{% else %}
+            </a>
 
-<div class="profile-info">
 
-    <div class="info-row">
-        <span>Name</span>
-        <strong>{{ request.user.profile.full_name|default:request.user.first_name }}</strong>
-    </div>
+            <a href="{% url 'logout_user' %}"
+               class="logout-btn">
 
-    <div class="info-row">
-        <span>Phone</span>
-        <strong>{{ request.user.profile.phone }}</strong>
-    </div>
+                <i class="fa-solid fa-right-from-bracket"></i>
 
-    <div class="info-row">
-        <span>Place</span>
-        <strong>{{ request.user.profile.district|default:"Not Added" }}</strong>
-    </div>
+                Logout
 
-</div>
+            </a>
 
-<div class="profile-actions">
 
-    <a href="{% url 'edit_profile' %}">
-        <button class="edit-btn">
-            Edit Profile
-        </button>
-    </a>
+        </div>
 
-    <a href="{% url 'logout_user' %}">
-        <button class="logout-btn">
-            Logout
-        </button>
-    </a>
-
-</div>
-
-{% endif %}
-
-<hr>
-
-<!--<div class="job-header">-->
-<!--    <h2>My Added Jobs ({{ jobs|length }})</h2>-->
-
-    
-</div>
-
-{% for job in jobs %}
-
-<div class="job-card">
-
-    <h3>{{ job.title }}</h3>
-
-    <h4>{{ job.shop_name }}</h4>
-
-    <div class="job-meta">
-
-        <span> {{ job.location }}</span>
-
-        <span> ₹{{ job.salary }} / Month</span>
-
-        <span> {{ job.work_time }}</span>
-
-        <span> {{ job.experience }}</span>
 
     </div>
 
-    <div class="job-actions">
 
-        <a href="{% url 'edit_job' job.id %}">
-            <button class="edit-job">Edit</button>
-        </a>
-
-        <a href="{% url 'delete_job' job.id %}"
-           onclick="return confirm('Delete this job?')">
-
-            <button class="delete-job">
-                Delete
-            </button>
-
-        </a>
-
-    </div>
-
-</div>
-
-{% empty %}
+    {% endif %}
 
 
 
-{% endfor %}
+    <!-- ================= MY JOBS ================= -->
+
+<!--    <div class="jobs-header">-->
+
+<!--        <div>-->
+
+<!--            <span>MY JOBS</span>-->
+
+<!--            <h2>-->
+<!--                Jobs You Added-->
+<!--            </h2>-->
+
+<!--        </div>-->
+
+
+<!--        <div class="job-count">-->
+
+<!--            {{ jobs|length }} Jobs-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+
+    <!-- ================= JOB GRID ================= -->
+
+<!--    <div class="jobs-grid">-->
+
+
+<!--        {% for job in jobs %}-->
+
+
+<!--        <div class="job-card">-->
+
+
+<!--            <div class="job-card-top">-->
+
+
+<!--                <div class="job-avatar">-->
+
+<!--                    {{ job.shop_name|first|upper }}-->
+
+<!--                </div>-->
+
+
+<!--                <div class="job-title">-->
+
+<!--                    <h3>-->
+
+<!--                        {{ job.title }}-->
+
+<!--                    </h3>-->
+
+
+<!--                    <p>-->
+
+<!--                        {{ job.shop_name }}-->
+
+<!--                    </p>-->
+
+<!--                </div>-->
+
+
+<!--            </div>-->
+
+
+
+            <!-- JOB META -->
+
+<!--            <div class="job-meta">-->
+
+
+<!--                <div>-->
+
+<!--                    <i class="fa-solid fa-location-dot"></i>-->
+
+<!--                    {{ job.location }}-->
+
+<!--                </div>-->
+
+
+<!--                <div>-->
+
+<!--                    <i class="fa-solid fa-indian-rupee-sign"></i>-->
+
+<!--                    {{ job.salary }}-->
+
+<!--                </div>-->
+
+
+<!--                <div>-->
+
+<!--                    <i class="fa-regular fa-clock"></i>-->
+
+<!--                    {{ job.work_time }}-->
+
+<!--                </div>-->
+
+
+<!--                <div>-->
+
+<!--                    <i class="fa-solid fa-briefcase"></i>-->
+
+<!--                    {{ job.experience|default:"Fresher" }}-->
+
+<!--                </div>-->
+
+
+<!--            </div>-->
+
+
+
+            <!-- ACTIONS -->
+
+<!--            <div class="job-actions">-->
+
+
+<!--                <a href="{% url 'edit_job' job.id %}"-->
+<!--                   class="edit-job">-->
+
+<!--                    <i class="fa-solid fa-pen"></i>-->
+
+<!--                    Edit-->
+
+<!--                </a>-->
+
+
+<!--                <a href="{% url 'delete_job' job.id %}"-->
+<!--                   class="delete-job"-->
+
+<!--                   onclick="return confirm('Delete this job?')">-->
+
+<!--                    <i class="fa-solid fa-trash"></i>-->
+
+<!--                    Delete-->
+
+<!--                </a>-->
+
+
+<!--            </div>-->
+
+
+<!--        </div>-->
+
+
+<!--        {% empty %}-->
+
+
+<!--        <div class="empty-jobs">-->
+
+<!--            <i class="fa-solid fa-briefcase"></i>-->
+
+<!--            <h3>-->
+<!--                No Jobs Added Yet-->
+<!--            </h3>-->
+
+<!--            <p>-->
+<!--                Jobs you add will appear here.-->
+<!--            </p>-->
+
+<!--        </div>-->
+
+
+<!--        {% endfor %}-->
+
+
+<!--    </div>-->
+
+
+</section>
+
 
 </body>
+
 </html>

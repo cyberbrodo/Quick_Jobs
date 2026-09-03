@@ -338,6 +338,7 @@ def home(request):
 
 @login_required(login_url="login")
 def profile(request):
+
     jobs = (
         Job.objects
         .filter(owner=request.user)
@@ -352,7 +353,6 @@ def profile(request):
             "jobs": jobs,
         },
     )
-
 
 # =========================================================
 # ADD JOB
@@ -759,9 +759,12 @@ def edit_profile(request):
 
         return redirect("profile")
 
-    jobs = Job.objects.filter(
-        owner=request.user
-    ).order_by("-id")
+    jobs = (
+        Job.objects
+        .filter(owner=request.user)
+        .select_related("category")
+        .order_by("-id")
+    )
 
     return render(
         request,
@@ -771,8 +774,6 @@ def edit_profile(request):
             "edit": True,
         },
     )
-
-
 
 from django.shortcuts import render
 

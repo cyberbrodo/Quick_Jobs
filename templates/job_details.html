@@ -1,119 +1,455 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>{{ job.title }} | QuickJobs</title>
-    <link rel="stylesheet" href="{% static 'css/job_details.css' %}">
+
+
+    <link rel="stylesheet"
+          href="{% static 'css/job_details.css' %}">
+
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
+
 
 <body>
 
+
 <section class="details-page">
+
+
+    <!-- BACK -->
+
+    <a href="{% url 'all_jobs' %}"
+       class="back-btn">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Back to Jobs
+
+    </a>
+
+
 
     <div class="details-card">
 
-        <div class="details-header">
-            <a href="{% url 'home' %}" class="back-btn">← Back</a>
-        </div>
 
-        <div class="job-main">
+        <!-- ================= HEADER ================= -->
 
-          <h1>{{ job.title }}</h1>
-            <h2>{{ job.shop_name }}</h2>
+        <div class="job-header">
 
-            <div class="job-info">
 
-                <p><strong>Location:</strong> {{ job.location }}</p>
-    <p><strong>Work Type:</strong> {{ job.work_time }}</p>
-    
-    <p><strong>Salary:</strong> ₹{{ job.salary }}</p>
+            <div class="company-info">
+
+
+                <div class="company-avatar">
+
+                    {{ job.shop_name|first|upper }}
 
                 </div>
 
-            <hr>
 
-            <h3>Job Description</h3>
+                <div class="company-text">
 
-            <div class="description">
-                {{ job.description|linebreaks }}
+                    <span class="company-label">
+                        JOB OPPORTUNITY
+                    </span>
+
+
+                    <h1>
+                        {{ job.title }}
+                    </h1>
+
+
+                    <h2>
+                        {{ job.shop_name }}
+                    </h2>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- JOB STATUS -->
+
+            <div class="verified-badge">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Verified Job
+
             </div>
 
 
         </div>
-               <hr>
-
-<hr>
-
-<h3>Requirements</h3>
-
-<ul class="requirements">
-
-    <li>
-    <strong>Age:</strong>
-    {{ job.age_limit }}
-</li>
-
-<li>
-    <strong>Gender:</strong>
-    {{ job.gender }}
-</li>
-
-<li>
-    <strong>Education:</strong>
-    {{ job.education }}
-</li>
-
-<li>
-    <strong>Experience:</strong>
-    {{ job.experience }}
-</li>
 
 
 
-</ul>
+        <!-- ================= JOB QUICK INFO ================= -->
 
-    <hr>
+        <div class="quick-info">
 
-             <h3>About Company</h3>
 
-    <p><strong>{{ job.shop_name }}</strong></p>
+            <div class="quick-item">
 
-    <p>{{ job.location }}, Kerala</p>
+                <div class="quick-icon">
 
-        {% if job.shop_photo %}
-    <div class="shop-photo">
-        <img src="{{ job.shop_photo.url }}"
-             alt="Shop Photo"
-             width="200"
-             height="150">
-    </div>
-{% endif %}
+                    <i class="fa-solid fa-location-dot"></i>
 
-    <hr>
+                </div>
 
-        <div class="contact-box">
 
-            <span class="contact-label">Apply / Contact</span>
+                <div>
 
-            <a
-    class="contact-btn"
-    href="https://wa.me/91{{ job.phone|cut:'+91' }}?text={{ 'Hi, I saw your job vacancy on QuickJobs. I am interested.'|urlencode }}"
-    target="_blank"
->
-    Apply on WhatsApp
-</a>
+                    <span>Location</span>
 
-            <small class="note">
-                Send your resume through WhatsApp
-            </small>
+                    <strong>
+                        {{ job.location }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="quick-item">
+
+                <div class="quick-icon">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>Work Type</span>
+
+                    <strong>
+                        {{ job.work_time|default:"Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="quick-item">
+
+                <div class="quick-icon">
+
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span>Salary</span>
+
+                    <strong class="salary">
+
+                        ₹{{ job.salary|default:"Not specified" }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
 
         </div>
 
+
+
+        <!-- ================= DESCRIPTION ================= -->
+
+        <div class="content-section">
+
+
+            <div class="section-title">
+
+                <div class="title-icon">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                </div>
+
+
+                <h3>
+                    Job Description
+                </h3>
+
+            </div>
+
+
+            <div class="description">
+
+                {{ job.description|linebreaks }}
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================= REQUIREMENTS ================= -->
+
+        <div class="content-section">
+
+
+            <div class="section-title">
+
+                <div class="title-icon">
+
+                    <i class="fa-solid fa-list-check"></i>
+
+                </div>
+
+
+                <h3>
+                    Requirements
+                </h3>
+
+            </div>
+
+
+
+            <div class="requirements-grid">
+
+
+                <!-- AGE -->
+
+                <div class="requirement-item">
+
+                    <i class="fa-solid fa-user"></i>
+
+
+                    <div>
+
+                        <span>Age Limit</span>
+
+                        <strong>
+                            {{ job.age_limit|default:"Not specified" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- GENDER -->
+
+                <div class="requirement-item">
+
+                    <i class="fa-solid fa-venus-mars"></i>
+
+
+                    <div>
+
+                        <span>Gender</span>
+
+                        <strong>
+                            {{ job.gender|default:"Not specified" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- EDUCATION -->
+
+                <div class="requirement-item">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+
+                    <div>
+
+                        <span>Education</span>
+
+                        <strong>
+                            {{ job.education|default:"Not specified" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- EXPERIENCE -->
+
+                <div class="requirement-item">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+
+                    <div>
+
+                        <span>Experience</span>
+
+                        <strong>
+                            {{ job.experience|default:"Fresher" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================= COMPANY ================= -->
+
+        <div class="content-section">
+
+
+            <div class="section-title">
+
+                <div class="title-icon">
+
+                    <i class="fa-solid fa-building"></i>
+
+                </div>
+
+
+                <h3>
+                    About Company
+                </h3>
+
+            </div>
+
+
+
+            <div class="company-details">
+
+
+                <div class="company-about">
+
+
+                    <h4>
+                        {{ job.shop_name }}
+                    </h4>
+
+
+                    <p>
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        {{ job.location }}
+
+                    </p>
+
+
+                </div>
+
+
+
+                {% if job.shop_photo %}
+
+                <div class="shop-photo">
+
+                    <img src="{{ job.shop_photo.url }}"
+                         alt="{{ job.shop_name }}">
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================= APPLY ================= -->
+
+        <div class="apply-box">
+
+
+            <div class="apply-text">
+
+
+                <div class="apply-icon">
+
+                    <i class="fa-brands fa-whatsapp"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h3>
+                        Interested in this job?
+                    </h3>
+
+
+                    <p>
+                        Contact the employer directly on WhatsApp.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <a
+                class="contact-btn"
+
+                href="https://wa.me/91{{ job.phone|cut:'+91' }}?text={{ 'Hi, I saw your job vacancy on QuickJobs. I am interested.'|urlencode }}"
+
+                target="_blank"
+
+                rel="noopener"
+            >
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+                Apply on WhatsApp
+
+            </a>
+
+
+        </div>
+
+
+
     </div>
+
 
 </section>
 
+
 </body>
+
 </html>
