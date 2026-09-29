@@ -1,91 +1,794 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Complete Profile | QuickJobs</title>
+    <title>Complete Profile - QuickJobs</title>
 
-<link href="{% static 'css/email.css' %}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="{% static 'css/complete_profile.css' %}">
 </head>
 
 <body>
 
-<div class="login-card">
+<div class="page">
 
-<h1>Quick<span>Jobs.</span></h1>
-<p class="tagline">Complete your profile</p>
+    <div class="profile-card">
 
-{% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
-{% endif %}
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Quick<span>Jobs</span></h1>
+            <p>Complete your profile to find better jobs</p>
+        </div>
 
-<form method="POST">
-{% csrf_token %}
 
-<label>Your Name</label>
+        <!-- PROGRESS -->
+        <div class="progress-section">
 
-<input
-    type="text"
-    name="name"
-    placeholder="Enter your name"
-    value="{{ profile.full_name|default:request.user.first_name }}"
-    autocomplete="name"
-    required
->
+            <div class="progress-top">
+                <span>
+                    {% if step == 1 %}
+                        Personal Information
+                    {% elif step == 2 %}
+                        Education
+                    {% elif step == 3 %}
+                        Experience
+                    {% elif step == 4 %}
+                        Job Preference
+                    {% elif step == 5 %}
+                        Skills & About
+                    {% endif %}
+                </span>
 
-<label>Your Place</label>
+                <strong>
+                    {% if step == 1 %}
+                        20%
+                    {% elif step == 2 %}
+                        40%
+                    {% elif step == 3 %}
+                        60%
+                    {% elif step == 4 %}
+                        80%
+                    {% elif step == 5 %}
+                        100%
+                    {% endif %}
+                </strong>
+            </div>
 
-<input
-    type="text"
-    name="district"
-    placeholder="Enter your place"
-    value="{{ profile.district }}"
-    required
->
-<div class="gender">
-<label>Gender</label><br>
+            <div class="progress-bar">
+                <div
+                    class="progress-fill"
+                    style="width:
+                    {% if step == 1 %}20%
+                    {% elif step == 2 %}40%
+                    {% elif step == 3 %}60%
+                    {% elif step == 4 %}80%
+                    {% elif step == 5 %}100%
+                    {% endif %};">
+                </div>
+            </div>
 
-<select name="gender" required>
-    <option value="" disabled {% if not profile.gender %}selected{% endif %}>
-        Select Gender
-    </option>
+            <small>
+                Step {{ step }} of 5
+            </small>
 
-    <option value="Male"
-        {% if profile.gender == "Male" %}selected{% endif %}>
-        Male
-    </option>
+        </div>
 
-    <option value="Female"
-        {% if profile.gender == "Female" %}selected{% endif %}>
-        Female
-    </option>
 
-    <option value="Other"
-        {% if profile.gender == "Other" %}selected{% endif %}>
-        Other
-    </option>
-</select> <br><br>
+        <!-- MESSAGES -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- FORM -->
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <!-- ========================= -->
+            <!-- STEP 1 PERSONAL -->
+            <!-- ========================= -->
+
+            {% if step|stringformat:"s" == "1" %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="icon">
+                        👤
+                    </div>
+
+                    <div>
+                        <h2>Personal Information</h2>
+                        <p>Tell us a little about yourself</p>
+                    </div>
+
+                </div>
+
+
+                <!-- PHOTO -->
+
+<!--                <div class="form-group">-->
+
+<!--                    <label>Profile Photo</label>-->
+
+<!--                    <div class="photo-upload">-->
+
+<!--                        <div class="avatar">-->
+
+<!--                            {% if profile.profile_photo %}-->
+<!--                                <img-->
+<!--                                    src="{{ profile.profile_photo.url }}"-->
+<!--                                    alt="Profile Photo">-->
+<!--                            {% else %}-->
+<!--                                <span>👤</span>-->
+<!--                            {% endif %}-->
+
+<!--                        </div>-->
+
+<!--                        <div class="photo-info">-->
+
+<!--                            <label-->
+<!--                                for="profile_photo"-->
+<!--                                class="upload-btn">-->
+<!--                                Choose Photo-->
+<!--                            </label>-->
+
+<!--                            <input-->
+<!--                                type="file"-->
+<!--                                id="profile_photo"-->
+<!--                                name="profile_photo"-->
+<!--                                accept="image/*">-->
+
+<!--                            <small>-->
+<!--                                JPG, PNG • Max 5MB-->
+<!--                            </small>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+
+
+
+                
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ profile.full_name|default:'' }}"
+                        placeholder="Enter your full name"
+                        required>
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="phone"
+                        value="{{ profile.phone }}"
+                        class="readonly"
+                        readonly>
+
+                    <small class="field-note">
+                        Phone number cannot be changed.
+                    </small>
+
+                </div>
+
+
+                <!-- DISTRICT -->
+
+                <div class="form-group">
+
+                    <label for="district">
+                        District / Place
+                    </label>
+
+                    <input
+                        type="text"
+                        id="district"
+                        name="district"
+                        value="{{ profile.district|default:'' }}"
+                        placeholder="Eg: Malappuram"
+                        required>
+
+                </div>
+
+
+                <!-- GENDER -->
+
+                <div class="form-group">
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <div class="choice-grid">
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="Male"
+                                {% if profile.gender == "Male" %}
+                                    checked
+                                {% endif %}
+                                required>
+
+                            <span>Male</span>
+
+                        </label>
+
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="gender"
+                                value="Female"
+                                {% if profile.gender == "Female" %}
+                                    checked
+                                {% endif %}>
+
+                            <span>Female</span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOB -->
+
+                <div class="form-group">
+
+                    <label for="dob">
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dob"
+                        name="dob"
+                        value="{{ profile.dob|date:'Y-m-d' }}"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-section">
+
+                <button type="submit" class="save-btn">
+                    Continue
+                    <span>→</span>
+                </button>
+
+                <p>
+                    Your information is safe with us.
+                </p>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- STEP 2 EDUCATION -->
+            <!-- ========================= -->
+
+            {% elif step|stringformat:"s" == "2" %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="icon">
+                        🎓
+                    </div>
+
+                    <div>
+                        <h2>Education</h2>
+                        <p>Tell us about your education</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="education">
+                        Highest Education
+                    </label>
+
+                    <select
+                        id="education"
+                        name="education"
+                        required>
+
+                        <option value="">
+                            Select education
+                        </option>
+
+                        <option value="10th"
+                            {% if profile.education == "10th" %}
+                                selected
+                            {% endif %}>
+                            10th
+                        </option>
+
+                        <option value="12th"
+                            {% if profile.education == "12th" %}
+                                selected
+                            {% endif %}>
+                            12th
+                        </option>
+
+                        <option value="Diploma"
+                            {% if profile.education == "Diploma" %}
+                                selected
+                            {% endif %}>
+                            Diploma
+                        </option>
+
+                        <option value="ITI"
+                            {% if profile.education == "ITI" %}
+                                selected
+                            {% endif %}>
+                            ITI
+                        </option>
+
+                        <option value="Degree"
+                            {% if profile.education == "Degree" %}
+                                selected
+                            {% endif %}>
+                            Degree
+                        </option>
+
+                        <option value="PG"
+                            {% if profile.education == "PG" %}
+                                selected
+                            {% endif %}>
+                            Post Graduation
+                        </option>
+
+                        <option value="Other"
+                            {% if profile.education == "Other" %}
+                                selected
+                            {% endif %}>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="course">
+                        Course / Specialization
+                    </label>
+
+                    <input
+                        type="text"
+                        id="course"
+                        name="course"
+                        value="{{ profile.course|default:'' }}"
+                        placeholder="Eg: B.Com, Electrician, Computer Science">
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-section">
+
+                <button type="submit" class="save-btn">
+                    Continue
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- STEP 3 EXPERIENCE -->
+            <!-- ========================= -->
+
+            {% elif step|stringformat:"s" == "3" %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="icon">
+                        💼
+                    </div>
+
+                    <div>
+                        <h2>Experience</h2>
+                        <p>Tell us about your work experience</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Experience Type
+                    </label>
+
+                    <div class="choice-grid">
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="experience_type"
+                                value="Fresher"
+                                {% if profile.experience_type == "Fresher" %}
+                                    checked
+                                {% endif %}
+                                required>
+
+                            <span>Fresher</span>
+
+                        </label>
+
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="experience_type"
+                                value="Experienced"
+                                {% if profile.experience_type == "Experienced" %}
+                                    checked
+                                {% endif %}>
+
+                            <span>Experienced</span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="experience_years">
+                        Experience
+                    </label>
+
+                    <input
+                        type="number"
+                        id="experience_years"
+                        name="experience_years"
+                        value="{{ profile.experience_years|default:'' }}"
+                        placeholder="Eg: 2"
+                        min="0"
+                        step="0.5">
+
+                    <small class="field-note">
+                        Enter experience in years.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="previous_job">
+                        Previous Job
+                    </label>
+
+                    <input
+                        type="text"
+                        id="previous_job"
+                        name="previous_job"
+                        value="{{ profile.previous_job|default:'' }}"
+                        placeholder="Eg: Delivery Executive">
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-section">
+
+                <button type="submit" class="save-btn">
+                    Continue
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- STEP 4 JOB PREFERENCE -->
+            <!-- ========================= -->
+
+            {% elif step|stringformat:"s" == "4" %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="icon">
+                        🔎
+                    </div>
+
+                    <div>
+                        <h2>Job Preference</h2>
+                        <p>Tell us what type of job you want</p>
+                    </div>
+
+                </div>
+
+
+                <!-- CATEGORY -->
+
+                <div class="form-group">
+
+                    <label for="job_category">
+                        Job Category
+                    </label>
+
+                    <select
+                        id="job_category"
+                        name="job_category"
+                        required>
+
+                        <option value="">
+                            Select job category
+                        </option>
+
+                        {% for category in categories %}
+
+                        <option
+                            value="{{ category.id }}"
+                            {% if profile.job_category_id == category.id %}
+                                selected
+                            {% endif %}>
+
+                            {{ category.name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- JOB TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Job Type
+                    </label>
+
+                    <div class="choice-grid three">
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="job_type"
+                                value="Full-time"
+                                {% if profile.job_type == "Full-time" %}
+                                    checked
+                                {% endif %}
+                                required>
+
+                            <span>Full-time</span>
+
+                        </label>
+
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="job_type"
+                                value="Part-time"
+                                {% if profile.job_type == "Part-time" %}
+                                    checked
+                                {% endif %}>
+
+                            <span>Part-time</span>
+
+                        </label>
+
+
+                        <label class="choice">
+
+                            <input
+                                type="radio"
+                                name="job_type"
+                                value="Daily Wage"
+                                {% if profile.job_type == "Daily Wage" %}
+                                    checked
+                                {% endif %}>
+
+                            <span>Daily Wage</span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="form-group">
+
+                    <label for="preferred_location">
+                        Preferred Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="preferred_location"
+                        name="preferred_location"
+                        value="{{ profile.preferred_location|default:'' }}"
+                        placeholder="Eg: Tirur, Malappuram"
+                        required>
+
+                </div>
+
+
+                <!-- SALARY -->
+
+                <div class="form-group">
+
+                    <label for="expected_salary">
+                        Expected Salary
+                    </label>
+
+                    <input
+                        type="number"
+                        id="expected_salary"
+                        name="expected_salary"
+                        value="{{ profile.expected_salary|default:'' }}"
+                        placeholder="Eg: 15000"
+                        min="0"
+                        required>
+
+                    <small class="field-note">
+                        Expected monthly salary.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-section">
+
+                <button type="submit" class="save-btn">
+                    Continue
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- STEP 5 SKILLS & ABOUT -->
+            <!-- ========================= -->
+
+            {% elif step|stringformat:"s" == "5" %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="icon">
+                        ⭐
+                    </div>
+
+                    <div>
+                        <h2>Skills & About</h2>
+                        <p>Show employers what you can do</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="skills">
+                        Skills
+                    </label>
+
+                    <textarea
+                        id="skills"
+                        name="skills"
+                        placeholder="Eg: Driving, Customer Service, Computer, Sales..."
+                        required>{{ profile.skills|default:'' }}</textarea>
+
+                    <small class="field-note">
+                        Add your main skills.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="about_me">
+                        About Me
+                    </label>
+
+                    <textarea
+                        id="about_me"
+                        name="about_me"
+                        placeholder="Tell employers a little about yourself..."
+                        required>{{ profile.about_me|default:'' }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="submit-section">
+
+                <button type="submit" class="save-btn">
+
+                    Finish Profile
+
+                    <span>✓</span>
+
+                </button>
+
+                <p>
+                    You're almost ready to find your next job!
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </form>
 
     </div>
-
-<label>Date of Birth</label>
-
-<input
-    type="date"
-    name="dob"
-    value="{{ profile.dob|date:'Y-m-d' }}"
-    required
->
-
-<button type="submit">
-    Save and Continue →
-</button>
-
-</form>
 
 </div>
 

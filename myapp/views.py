@@ -159,6 +159,7 @@ def firebase_login(request):
 
 @login_required(login_url="login")
 def complete_profile(request):
+
     phone = f"+{request.user.username}"
 
     profile, _ = Profile.objects.get_or_create(
@@ -170,61 +171,155 @@ def complete_profile(request):
         profile.phone = phone
         profile.save(update_fields=["phone"])
 
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        district = request.POST.get("district", "").strip()
-        gender = request.POST.get("gender", "").strip()
-        dob = request.POST.get("dob", "").strip()
+    # Current step
+    try:
+        step = int(request.GET.get("step", 1))
+    except (TypeError, ValueError):
+        step = 1
 
-        if not name:
-            messages.error(request, "Please enter your name")
-            return render(
-                request,
-                "complete_profile.html",
-                {"profile": profile},
+    if step < 1:
+        step = 1
+
+    if step > 5:
+        step = 5
+
+    if request.method == "POST":
+
+        # STEP 1
+        if step == 1:
+
+            name = request.POST.get("name", "").strip()
+            district = request.POST.get("district", "").strip()
+            gender = request.POST.get("gender", "").strip()
+            dob = request.POST.get("dob", "").strip()
+
+            if not name or not district or not gender or not dob:
+                messages.error(
+                    request,
+                    "Please complete all personal information."
+                )
+                return render(
+                    request,
+                    "complete_profile.html",
+                    {
+                        "profile": profile,
+                        "step": 1,
+                    },
+                )
+
+            request.user.first_name = name
+            request.user.save(update_fields=["first_name"])
+
+            profile.full_name = name
+            profile.district = district
+            profile.gender = gender
+            profile.dob = dob
+            profile.save()
+
+            return redirect("/complete-profile/?step=2")
+
+        # STEP 2
+        elif step == 2:
+
+            profile.education = request.POST.get(
+                "education", ""
+            ).strip()
+
+            profile.course = request.POST.get(
+                "course", ""
+            ).strip()
+
+            profile.save()
+
+            return redirect("/complete-profile/?step=3")
+
+        # STEP 3
+        elif step == 3:
+
+            profile.experience_type = request.POST.get(
+                "experience_type", ""
+            ).strip()
+
+            experience_years = request.POST.get(
+                "experience_years", ""
+            ).strip()
+
+            profile.experience_years = (
+                experience_years if experience_years else None
             )
 
-        request.user.first_name = name
-        request.user.save(update_fields=["first_name"])
+            profile.previous_job = request.POST.get(
+                "previous_job", ""
+            ).strip()
 
-        profile.full_name = name
-        profile.district = district
-        profile.gender = gender
-        profile.dob = dob
-        profile.profile_completed = True
+            profile.save()
 
-        profile.save(
-            update_fields=[
-                "full_name",
-                "district",
-                "gender",
-                "dob",
-                "profile_completed",
-                "updated_at",
-            ]
-        )
+            return redirect("/complete-profile/?step=4")
 
-        create_activity(
-            request,
-            ActivityLog.PROFILE_UPDATED,
-            f"""
-Name: {profile.full_name}
-Place: {profile.district}
-Gender: {profile.gender}
-DOB: {profile.dob}
-""".strip(),
-        )
+        # STEP 4
+        elif step == 4:
 
-        messages.success(request, "Profile completed successfully")
-        return redirect("home")
+            category_id = request.POST.get(
+                "job_category", ""
+            ).strip()
 
-    if not profile.full_name and request.user.first_name:
-        profile.full_name = request.user.first_name
+            if category_id:
+                profile.job_category_id = category_id
+
+            profile.job_type = request.POST.get(
+                "job_type", ""
+            ).strip()
+
+            profile.preferred_location = request.POST.get(
+                "preferred_location", ""
+            ).strip()
+
+            expected_salary = request.POST.get(
+                "expected_salary", ""
+            ).strip()
+
+            profile.expected_salary = (
+                int(expected_salary)
+                if expected_salary.isdigit()
+                else None
+            )
+
+            profile.save()
+
+            return redirect("/complete-profile/?step=5")
+
+        # STEP 5
+        elif step == 5:
+
+            profile.skills = request.POST.get(
+                "skills", ""
+            ).strip()
+
+            profile.about_me = request.POST.get(
+                "about_me", ""
+            ).strip()
+
+            profile.profile_completed = True
+
+            profile.save()
+
+            messages.success(
+                request,
+                "Profile completed successfully!"
+            )
+
+            return redirect("home")
+
+    categories = Category.objects.all()
 
     return render(
         request,
         "complete_profile.html",
-        {"profile": profile},
+        {
+            "profile": profile,
+            "step": step,
+            "categories": categories,
+        },
     )
 
 # =========================================================
